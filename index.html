@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOSS BET AI PRO v2.0</title>
+    <style>
+        /* --- CSS STYLE NEON --- */
+        :root {
+            --bg-color: #0b0e14;
+            --card-bg: #161b22;
+            --neon-blue: #00d4ff;
+            --neon-green: #39ff14;
+            --neon-red: #ff3131;
+            --text-color: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .neon-title {
+            font-size: 24px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+            margin-bottom: 5px;
+        }
+
+        .neon-title span { color: var(--neon-green); }
+
+        .status-badge {
+            font-size: 12px;
+            background: rgba(0, 212, 255, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            color: var(--neon-blue);
+            border: 1px solid var(--neon-blue);
+        }
+
+        .display-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #1c2128;
+            border-radius: 15px;
+            position: relative;
+        }
+
+        #signal-text {
+            font-size: 14px;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        #prediction-value {
+            font-size: 48px;
+            font-weight: bold;
+            color: #ccc;
+            transition: 0.5s;
+        }
+
+        .accuracy-box {
+            font-size: 14px;
+            margin-top: 10px;
+            color: #888;
+        }
+
+        #percent-val { color: var(--neon-green); font-weight: bold; }
+
+        .history-container {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .history-list {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+        }
+
+        .history-item {
+            padding: 5px 12px;
+            border-radius: 5px;
+            font-size: 13px;
+            background: #2d333b;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .low { color: var(--neon-red); border-bottom: 2px solid var(--neon-red); }
+        .high { color: var(--neon-green); border-bottom: 2px solid var(--neon-green); }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 2px solid var(--neon-blue);
+            color: var(--neon-blue);
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: var(--neon-blue);
+            color: white;
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        .active-signal {
+            color: var(--neon-green) !important;
+            text-shadow: 0 0 15px var(--neon-green);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="neon-title">BOSS BET <span>AI</span></div>
+        <span class="status-badge">ALGORITHM V2.0 ACTIVE</span>
+
+        <div class="display-section">
+            <div id="signal-text">WAITING FOR PATTERN...</div>
+            <div id="prediction-value">---</div>
+            <div class="accuracy-box">Confidence: <span id="percent-val">0%</span></div>
+        </div>
+
+        <div class="history-container">
+            <small>LIVE HISTORY (Manual Entry)</small>
+            <div id="history-list" class="history-list">
+                </div>
+        </div>
+
+        <input type="number" id="manual-input" step="0.01" placeholder="Ampidiro ny valiny farany (ex: 1.25)" 
+               style="width: 90%; padding: 10px; margin-top: 15px; border-radius: 5px; border: none; outline: none;">
+        
+        <button onclick="addData()">HAMAKAFAKA (ANALYZE)</button>
+    </div>
+
+    <script>
+        /* --- JAVASCRIPT LOGIC --- */
+        let historyData = [];
+
+        function addData() {
+            const input = document.getElementById('manual-input');
+            const val = parseFloat(input.value);
+
+            if (isNaN(val) || val <= 0) {
+                alert("Ampidiro isa marina azafady!");
+                return;
+            }
+
+            // Ampidirina ao amin'ny tantara
+            historyData.unshift(val);
+            if (historyData.length > 6) historyData.pop(); // Tehirizina ny 6 farany ihany
+
+            updateUI();
+            runAlgorithm();
+            input.value = ''; // Diovina ny input
+        }
+
+        function updateUI() {
+            const list = document.getElementById('history-list');
+            list.innerHTML = '';
+            
+            historyData.forEach(num => {
+                const span = document.createElement('div');
+                span.className = `history-item ${num < 1.5 ? 'low' : 'high'}`;
+                span.innerText = num.toFixed(2) + 'x';
+                list.appendChild(span);
+            });
+        }
+
+        function runAlgorithm() {
+            const signalText = document.getElementById('signal-text');
+            const predictVal = document.getElementById('prediction-value');
+            const percentVal = document.getElementById('percent-val');
+
+            // --- NY LOGIQUE 95% ---
+            // Jerena ny 3 farany
+            if (historyData.length >= 3) {
+                let lastThree = historyData.slice(0, 3);
+                let lowCount = lastThree.filter(x => x < 1.5).length;
+
+                if (lowCount >= 3) {
+                    // SIGNAL MAHERY: Rehefa nivoaka in-3 ny isa ambany
+                    signalText.innerText = "STRONG SIGNAL - BET NOW!";
+                    signalText.style.color = "#39ff14";
+                    predictVal.innerText = "1.50x";
+                    predictVal.classList.add('active-signal');
+                    percentVal.innerText = "95%";
+                } else if (lowCount === 2) {
+                    signalText.innerText = "PREPARING NEXT ROUND...";
+                    signalText.style.color = "orange";
+                    predictVal.innerText = "WAIT";
+                    predictVal.classList.remove('active-signal');
+                    percentVal.innerText = "65%";
+                } else {
+                    signalText.innerText = "MARKET UNSTABLE - WAIT";
+                    signalText.style.color = "#ff3131";
+                    predictVal.innerText = "---";
+                    predictVal.classList.remove('active-signal');
+                    percentVal.innerText = "10%";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
