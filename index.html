@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOSS BET AI PRO - CONTROL PANEL</title>
+    <title>BOSS BET AI - DYNAMIC ALGO</title>
     <style>
         :root {
             --bg: #0b0e14;
@@ -15,121 +15,64 @@
             --text: #ffffff;
         }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            justify-content: center;
-            margin: 0;
-            padding: 15px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 450px;
-            background: var(--card);
-            padding: 20px;
-            border-radius: 20px;
-            border: 1px solid #30363d;
-        }
-
+        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; margin: 0; padding: 15px; }
+        .container { width: 100%; max-width: 450px; background: var(--card); padding: 20px; border-radius: 20px; border: 1px solid #30363d; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        
         .header { text-align: center; margin-bottom: 15px; border-bottom: 1px solid #30363d; padding-bottom: 10px; }
-        .header h1 { color: var(--blue); margin: 0; font-size: 20px; text-transform: uppercase; }
-        #clock { font-size: 13px; color: #8b949e; margin-top: 5px; }
+        .header h1 { color: var(--blue); margin: 0; font-size: 22px; text-shadow: 0 0 10px var(--blue); }
+        #clock { font-size: 13px; color: #8b949e; }
 
-        /* PREDICTION AREA (AMBONY) */
-        .prediction-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-
-        .p-box {
-            background: #0d1117;
-            padding: 15px 5px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-        }
-
+        /* PREDICTION DISPLAY (AMBONY) */
+        .prediction-section { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .p-box { background: #0d1117; padding: 15px 5px; border-radius: 12px; text-align: center; border: 1px solid rgba(0, 212, 255, 0.2); transition: 0.3s; }
         .p-box small { display: block; font-size: 10px; color: #8b949e; margin-bottom: 5px; }
-        .p-val { font-size: 20px; font-weight: bold; margin-bottom: 5px; }
+        .p-val { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
         .p-time { font-size: 11px; background: rgba(255,255,255,0.1); padding: 2px; border-radius: 4px; color: #ccc; }
 
-        .sec { color: var(--green); }
-        .tent { color: var(--yellow); }
-        .risq { color: var(--red); }
+        .sec { color: var(--green); text-shadow: 0 0 5px var(--green); }
+        .tent { color: var(--yellow); text-shadow: 0 0 5px var(--yellow); }
+        .risq { color: var(--red); text-shadow: 0 0 5px var(--red); }
 
-        /* CONTROL AREA (AMBANY) */
-        .controls {
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 15px;
-            margin-top: 10px;
-        }
-
+        /* CONTROLS (AMBANY) */
+        .controls { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; border: 1px solid #30363d; }
         .field-group { margin-bottom: 12px; }
-        label { display: block; font-size: 11px; color: #8b949e; margin-bottom: 5px; }
+        label { display: block; font-size: 11px; color: var(--blue); margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; box-sizing: border-box; background: #0d1117; border: 1px solid #444; color: white; padding: 12px; border-radius: 8px; font-size: 15px; }
         
-        input {
-            width: 100%;
-            box-sizing: border-box;
-            background: #0d1117;
-            border: 1px solid #444;
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .button-row { display: flex; gap: 8px; margin-top: 15px; }
-        
-        button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-analyze { background: var(--blue); color: #000; }
+        .btn-row { display: flex; gap: 10px; margin-top: 15px; }
+        button { flex: 1; padding: 14px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 14px; }
+        .btn-analyze { background: var(--blue); color: #000; box-shadow: 0 4px 0 #008fb3; }
         .btn-clear { background: var(--red); color: #fff; flex: 0.3; }
-        button:active { transform: scale(0.95); }
+        button:active { transform: translateY(3px); box-shadow: none; }
 
-        /* HISTORY */
-        .history-box { margin-top: 20px; font-size: 12px; }
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #21262d;
-        }
+        /* HISTORIQUE TABLE */
+        .history-box { margin-top: 25px; }
+        .history-box h4 { font-size: 14px; border-left: 3px solid var(--blue); padding-left: 8px; margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        th { text-align: left; color: #8b949e; padding: 8px; border-bottom: 1px solid #30363d; }
+        td { padding: 10px 8px; border-bottom: 1px solid #21262d; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="header">
-            <h1>BOSS BET AI <span>V3</span></h1>
+            <h1>BOSS BET <span>ALGO PRO</span></h1>
             <div id="clock">00:00:00</div>
         </div>
 
         <div class="prediction-section">
-            <div class="p-box">
+            <div class="p-box" id="box-sec">
                 <small>SÉCURITÉ</small>
                 <div id="res-sec" class="p-val sec">---</div>
                 <div id="time-sec" class="p-time">--:--</div>
             </div>
-            <div class="p-box">
+            <div class="p-box" id="box-tent">
                 <small>TENTATIVE</small>
                 <div id="res-tent" class="p-val tent">---</div>
                 <div id="time-tent" class="p-time">--:--</div>
             </div>
-            <div class="p-box">
+            <div class="p-box" id="box-risq">
                 <small>RISQUE</small>
                 <div id="res-risq" class="p-val risq">---</div>
                 <div id="time-risq" class="p-time">--:--</div>
@@ -138,86 +81,110 @@
 
         <div class="controls">
             <div class="field-group">
-                <label>Lera niaingany (Heure de départ):</label>
+                <label>LERA NIAINGANY (DEPART):</label>
                 <input type="time" id="start-time" step="1">
             </div>
             <div class="field-group">
-                <label>Multiplier farany nivoaka:</label>
-                <input type="number" id="last-val" placeholder="ex: 1.54" step="0.01">
+                <label>MULTIPLIER FARANY (RESULT):</label>
+                <input type="number" id="last-val" placeholder="ex: 1.85" step="0.01">
             </div>
-            
-            <div class="button-row">
+            <div class="btn-row">
                 <button class="btn-clear" onclick="resetAll()">🗑️</button>
-                <button class="btn-analyze" onclick="processAI()">ANALYZE & PREDICT</button>
+                <button class="btn-analyze" onclick="calculateAI()">RUN ALGORITHM</button>
             </div>
         </div>
 
         <div class="history-box">
-            <h4 style="margin-bottom: 10px; color: var(--blue);">LATEST LOGS</h4>
-            <div id="history-list"></div>
+            <h4>HISTORY & SIGNALS</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>DEPART</th>
+                        <th>LAST</th>
+                        <th>AI SIGNAL (SEC)</th>
+                        <th>TIME</th>
+                    </tr>
+                </thead>
+                <tbody id="h-list"></tbody>
+            </table>
         </div>
     </div>
 
     <script>
-        // Clock
+        // Real-time Clock
         setInterval(() => {
             document.getElementById('clock').innerText = new Date().toLocaleTimeString();
         }, 1000);
 
         function resetAll() {
-            if(confirm("Fafana daholo ny data?")) {
-                document.getElementById('history-list').innerHTML = '';
-                ["res-sec", "res-tent", "res-risq"].forEach(id => document.getElementById(id).innerText = "---");
-                ["time-sec", "time-tent", "time-risq"].forEach(id => document.getElementById(id).innerText = "--:--");
+            if(confirm("Hofafana daholo ny tantara?")) {
+                document.getElementById('h-list').innerHTML = '';
+                location.reload();
             }
         }
 
-        function processAI() {
+        function calculateAI() {
             const startTime = document.getElementById('start-time').value;
             const lastVal = parseFloat(document.getElementById('last-val').value);
-            
-            if(!startTime || isNaN(lastVal)) {
-                alert("Fenoy ny lera sy ny multiplier farany!");
+
+            if (!startTime || isNaN(lastVal)) {
+                alert("Fenoy tsara ny lera sy ny multiplier!");
                 return;
             }
 
-            // Kajy ny lera manaraka (Signal)
-            // Ampiana 45 segondra isaky ny dingana ny lera nampidirinao
+            // --- ALGORITMA DYNAMIQUE ---
+            // Miankina amin'ny 'lastVal' no amokarany isa manaraka
+            const seed = lastVal * (new Date().getSeconds() + 1);
+            
+            // Fikajiana Côte (miovaova fa tsy raikitra)
+            const calcSec = (1.2 + (Math.sin(seed) * 0.2) + 0.1).toFixed(2);
+            const calcTent = (2.0 + (Math.cos(seed) * 0.5) + 0.3).toFixed(2);
+            const calcRisq = (5.0 + (Math.tan(seed % 1.5) * 2) + 1.0).toFixed(2);
+
+            // Fikajiana Lera (Heure de prédiction)
             const timeParts = startTime.split(':');
             let d = new Date();
             d.setHours(timeParts[0], timeParts[1], timeParts[2] || 0);
 
-            const formatTime = (dateObj, addSeconds) => {
-                let newDate = new Date(dateObj.getTime() + addSeconds * 1000);
+            const getFutureTime = (baseDate, secondsToAdd) => {
+                let newDate = new Date(baseDate.getTime() + secondsToAdd * 1000);
                 return newDate.toTimeString().split(' ')[0];
             };
 
-            // Fake AI Logic for Prediction
-            const predictions = {
-                sec: { val: "1.42x", time: formatTime(d, 40) },
-                tent: { val: "2.50x", time: formatTime(d, 85) },
-                risq: { val: "8.00x", time: formatTime(d, 130) }
+            const times = {
+                sec: getFutureTime(d, 35 + (lastVal * 2)),
+                tent: getFutureTime(d, 75 + (lastVal * 3)),
+                risq: getFutureTime(d, 120 + (lastVal * 5))
             };
 
-            // Update UI
-            document.getElementById('res-sec').innerText = predictions.sec.val;
-            document.getElementById('time-sec').innerText = predictions.sec.time;
+            // Update UI Predictions
+            document.getElementById('res-sec').innerText = calcSec + "x";
+            document.getElementById('time-sec').innerText = times.sec;
+            
+            document.getElementById('res-tent').innerText = calcTent + "x";
+            document.getElementById('time-tent').innerText = times.tent;
+            
+            document.getElementById('res-risq').innerText = (calcRisq > 100 ? "99.00" : calcRisq) + "x";
+            document.getElementById('time-risq').innerText = times.risq;
 
-            document.getElementById('res-tent').innerText = predictions.tent.val;
-            document.getElementById('time-tent').innerText = predictions.tent.time;
-
-            document.getElementById('res-risq').innerText = predictions.risq.val;
-            document.getElementById('time-risq').innerText = predictions.risq.time;
-
-            // Add to History
-            const historyList = document.getElementById('history-list');
-            const log = `
-                <div class="history-item">
-                    <span>${startTime} ➜ <b>${lastVal}x</b></span>
-                    <span style="color:var(--green)">Next: ${predictions.sec.time}</span>
-                </div>
+            // Update Historique Table
+            const hList = document.getElementById('h-list');
+            const row = `
+                <tr>
+                    <td>${startTime}</td>
+                    <td style="color:${lastVal < 2 ? '#ff3131' : '#39ff14'}"><b>${lastVal.toFixed(2)}x</b></td>
+                    <td style="color:var(--green)">${calcSec}x</td>
+                    <td>${times.sec}</td>
+                </tr>
             `;
-            historyList.insertAdjacentHTML('afterbegin', log);
+            hList.insertAdjacentHTML('afterbegin', row);
+
+            // Efajoro mihetsika kely rehefa miova
+            const boxes = document.querySelectorAll('.p-box');
+            boxes.forEach(b => {
+                b.style.transform = "scale(1.05)";
+                setTimeout(() => b.style.transform = "scale(1)", 200);
+            });
         }
     </script>
 </body>
