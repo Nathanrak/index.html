@@ -3,227 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOSS BET AI PRO v2.0</title>
+    <title>BOSS BET AI - PREDICTION PRO</title>
     <style>
-        /* --- CSS STYLE NEON --- */
         :root {
-            --bg-color: #0b0e14;
-            --card-bg: #161b22;
-            --neon-blue: #00d4ff;
-            --neon-green: #39ff14;
-            --neon-red: #ff3131;
-            --text-color: #ffffff;
+            --bg: #0d1117;
+            --card: #161b22;
+            --blue: #00d4ff;
+            --green: #39ff14;
+            --yellow: #ffd700;
+            --red: #ff3131;
+            --text: #ffffff;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--bg);
+            color: var(--text);
             font-family: 'Segoe UI', sans-serif;
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+            padding: 20px;
             margin: 0;
         }
 
         .container {
-            width: 90%;
-            max-width: 400px;
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 20px;
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
-            text-align: center;
-        }
-
-        .neon-title {
-            font-size: 24px;
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
-            margin-bottom: 5px;
-        }
-
-        .neon-title span { color: var(--neon-green); }
-
-        .status-badge {
-            font-size: 12px;
-            background: rgba(0, 212, 255, 0.1);
-            padding: 5px 15px;
-            border-radius: 20px;
-            color: var(--neon-blue);
-            border: 1px solid var(--neon-blue);
-        }
-
-        .display-section {
-            margin: 30px 0;
-            padding: 20px;
-            background: #1c2128;
-            border-radius: 15px;
-            position: relative;
-        }
-
-        #signal-text {
-            font-size: 14px;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-        }
-
-        #prediction-value {
-            font-size: 48px;
-            font-weight: bold;
-            color: #ccc;
-            transition: 0.5s;
-        }
-
-        .accuracy-box {
-            font-size: 14px;
-            margin-top: 10px;
-            color: #888;
-        }
-
-        #percent-val { color: var(--neon-green); font-weight: bold; }
-
-        .history-container {
-            text-align: left;
-            margin-top: 20px;
-        }
-
-        .history-list {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-            overflow-x: auto;
-            padding-bottom: 10px;
-        }
-
-        .history-item {
-            padding: 5px 12px;
-            border-radius: 5px;
-            font-size: 13px;
-            background: #2d333b;
-            min-width: 45px;
-            text-align: center;
-        }
-
-        .low { color: var(--neon-red); border-bottom: 2px solid var(--neon-red); }
-        .high { color: var(--neon-green); border-bottom: 2px solid var(--neon-green); }
-
-        button {
             width: 100%;
-            padding: 15px;
-            background: transparent;
-            border: 2px solid var(--neon-blue);
-            color: var(--neon-blue);
-            font-weight: bold;
+            max-width: 450px;
+            background: var(--card);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #30363d;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { color: var(--blue); margin: 0; font-size: 22px; text-shadow: 0 0 10px var(--blue); }
+        #live-clock { font-size: 14px; color: #8b949e; }
+
+        /* Prediction Display */
+        .prediction-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .p-card {
+            background: #0d1117;
+            padding: 10px;
             border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
+            text-align: center;
+            border: 1px solid #30363d;
+        }
+
+        .p-card small { font-size: 10px; display: block; margin-bottom: 5px; color: #8b949e; }
+        .p-val { font-weight: bold; font-size: 18px; }
+        .sec { color: var(--green); }
+        .tent { color: var(--yellow); }
+        .risq { color: var(--red); }
+
+        /* Controls */
+        .input-group { display: flex; gap: 5px; margin-bottom: 20px; }
+        input {
+            flex: 1;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .btn-add { background: var(--blue); color: black; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-clear { background: var(--red); color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; }
+
+        /* Historique Table */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
             margin-top: 10px;
         }
 
-        button:hover {
-            background: var(--neon-blue);
-            color: white;
-            box-shadow: 0 0 20px var(--neon-blue);
-        }
+        .history-table th { text-align: left; color: #8b949e; border-bottom: 1px solid #30363d; padding: 8px; }
+        .history-table td { padding: 8px; border-bottom: 1px solid #21262d; }
 
-        .active-signal {
-            color: var(--neon-green) !important;
-            text-shadow: 0 0 15px var(--neon-green);
-        }
+        .badge { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; }
+        .badge-win { background: rgba(57, 255, 20, 0.1); color: var(--green); }
+        .badge-wait { background: rgba(255, 215, 0, 0.1); color: var(--yellow); }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="neon-title">BOSS BET <span>AI</span></div>
-        <span class="status-badge">ALGORITHM V2.0 ACTIVE</span>
-
-        <div class="display-section">
-            <div id="signal-text">WAITING FOR PATTERN...</div>
-            <div id="prediction-value">---</div>
-            <div class="accuracy-box">Confidence: <span id="percent-val">0%</span></div>
+        <div class="header">
+            <h1>BOSS BET AI <span>PREDICTOR</span></h1>
+            <div id="live-clock">00:00:00</div>
         </div>
 
-        <div class="history-container">
-            <small>LIVE HISTORY (Manual Entry)</small>
-            <div id="history-list" class="history-list">
-                </div>
+        <div class="prediction-grid">
+            <div class="p-card">
+                <small>SÉCURITÉ</small>
+                <div id="p-sec" class="p-val sec">---</div>
+            </div>
+            <div class="p-card">
+                <small>TENTATIVE</small>
+                <div id="p-tent" class="p-val tent">---</div>
+            </div>
+            <div class="p-card">
+                <small>RISQUE</small>
+                <div id="p-risq" class="p-val risq">---</div>
+            </div>
         </div>
 
-        <input type="number" id="manual-input" step="0.01" placeholder="Ampidiro ny valiny farany (ex: 1.25)" 
-               style="width: 90%; padding: 10px; margin-top: 15px; border-radius: 5px; border: none; outline: none;">
-        
-        <button onclick="addData()">HAMAKAFAKA (ANALYZE)</button>
+        <div style="text-align:center; margin-bottom: 15px;">
+            <small style="color: #8b949e;">Next Departure: </small>
+            <span id="dep-time" style="color: var(--blue); font-weight: bold;">--:--:--</span>
+        </div>
+
+        <div class="input-group">
+            <input type="number" id="val-input" placeholder="Multiplier (ex: 1.45)" step="0.01">
+            <button class="btn-add" onclick="analyzeData()">ANALYZE</button>
+            <button class="btn-clear" onclick="clearAll()" title="Fafao daholo">🗑️</button>
+        </div>
+
+        <div class="history-section">
+            <h4 style="margin: 0 0 10px 0;">HISTORIQUE DES PRÉDICTIONS</h4>
+            <table class="history-table">
+                <thead>
+                    <tr>
+                        <th>LERA</th>
+                        <th>VOKATRA</th>
+                        <th>AI SIGNAL</th>
+                        <th>STATUS</th>
+                    </tr>
+                </thead>
+                <tbody id="h-body">
+                    </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
-        /* --- JAVASCRIPT LOGIC --- */
-        let historyData = [];
+        let history = [];
 
-        function addData() {
-            const input = document.getElementById('manual-input');
+        // 1. Clock Function
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('live-clock').innerText = now.toLocaleTimeString();
+        }, 1000);
+
+        // 2. Clear All
+        function clearAll() {
+            if(confirm("Tena hovonoina daholo ny tantara?")) {
+                history = [];
+                document.getElementById('h-body').innerHTML = '';
+                resetPredictions();
+            }
+        }
+
+        function resetPredictions() {
+            document.getElementById('p-sec').innerText = '---';
+            document.getElementById('p-tent').innerText = '---';
+            document.getElementById('p-risq').innerText = '---';
+            document.getElementById('dep-time').innerText = '--:--:--';
+        }
+
+        // 3. Main Algorithm
+        function analyzeData() {
+            const input = document.getElementById('val-input');
             const val = parseFloat(input.value);
+            const now = new Date();
+            const timeStr = now.getHours() + ":" + String(now.getMinutes()).padStart(2, '0') + ":" + String(now.getSeconds()).padStart(2, '0');
 
-            if (isNaN(val) || val <= 0) {
-                alert("Ampidiro isa marina azafady!");
-                return;
-            }
+            if (isNaN(val)) return;
 
-            // Ampidirina ao amin'ny tantara
-            historyData.unshift(val);
-            if (historyData.length > 6) historyData.pop(); // Tehirizina ny 6 farany ihany
+            // Alaina ny lera manaraka (Depart + 30s eo ho eo)
+            let nextDep = new Date(now.getTime() + 45000); 
+            let nextDepStr = nextDep.getHours() + ":" + String(nextDep.getMinutes()).padStart(2, '0') + ":" + String(nextDep.getSeconds()).padStart(2, '0');
 
-            updateUI();
-            runAlgorithm();
-            input.value = ''; // Diovina ny input
-        }
+            history.unshift({ time: timeStr, result: val });
+            if (history.length > 10) history.pop();
 
-        function updateUI() {
-            const list = document.getElementById('history-list');
-            list.innerHTML = '';
+            // Lojika fikajiana Côte
+            let lowCount = history.slice(0, 3).filter(x => x.result < 1.8).length;
             
-            historyData.forEach(num => {
-                const span = document.createElement('div');
-                span.className = `history-item ${num < 1.5 ? 'low' : 'high'}`;
-                span.innerText = num.toFixed(2) + 'x';
-                list.appendChild(span);
-            });
+            let prediction = { sec: "---", tent: "---", risq: "---", status: "WAITING" };
+
+            if (lowCount >= 2) {
+                prediction.sec = "1.35x";
+                prediction.tent = "2.10x";
+                prediction.risq = "5.00+";
+                prediction.status = "SIGNAL ON";
+                
+                document.getElementById('p-sec').innerText = prediction.sec;
+                document.getElementById('p-tent').innerText = prediction.tent;
+                document.getElementById('p-risq').innerText = prediction.risq;
+                document.getElementById('dep-time').innerText = nextDepStr;
+            } else {
+                resetPredictions();
+            }
+
+            // Update Historique Table
+            updateTable(timeStr, val, prediction.sec, prediction.status);
+            input.value = '';
         }
 
-        function runAlgorithm() {
-            const signalText = document.getElementById('signal-text');
-            const predictVal = document.getElementById('prediction-value');
-            const percentVal = document.getElementById('percent-val');
-
-            // --- NY LOGIQUE 95% ---
-            // Jerena ny 3 farany
-            if (historyData.length >= 3) {
-                let lastThree = historyData.slice(0, 3);
-                let lowCount = lastThree.filter(x => x < 1.5).length;
-
-                if (lowCount >= 3) {
-                    // SIGNAL MAHERY: Rehefa nivoaka in-3 ny isa ambany
-                    signalText.innerText = "STRONG SIGNAL - BET NOW!";
-                    signalText.style.color = "#39ff14";
-                    predictVal.innerText = "1.50x";
-                    predictVal.classList.add('active-signal');
-                    percentVal.innerText = "95%";
-                } else if (lowCount === 2) {
-                    signalText.innerText = "PREPARING NEXT ROUND...";
-                    signalText.style.color = "orange";
-                    predictVal.innerText = "WAIT";
-                    predictVal.classList.remove('active-signal');
-                    percentVal.innerText = "65%";
-                } else {
-                    signalText.innerText = "MARKET UNSTABLE - WAIT";
-                    signalText.style.color = "#ff3131";
-                    predictVal.innerText = "---";
-                    predictVal.classList.remove('active-signal');
-                    percentVal.innerText = "10%";
-                }
-            }
+        function updateTable(time, val, pred, status) {
+            const tbody = document.getElementById('h-body');
+            const row = `<tr>
+                <td>${time}</td>
+                <td style="font-weight:bold; color:${val < 2 ? '#ff3131' : '#39ff14'}">${val.toFixed(2)}x</td>
+                <td>${pred}</td>
+                <td><span class="badge ${status === 'SIGNAL ON' ? 'badge-win' : 'badge-wait'}">${status}</span></td>
+            </tr>`;
+            tbody.insertAdjacentHTML('afterbegin', row);
         }
     </script>
 </body>
