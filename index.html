@@ -1,123 +1,171 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="mg">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon Digital Clock Pro</title>
+    <title>BOSS BET PREDICT PRO</title>
     <style>
-        /* --- STYLE CSS --- */
         :root {
-            --neon-color: #00fff2; /* Couleur initiale */
+            --neon: #00fff2;
+            --bg: #0d1117;
         }
 
         body {
-            background-color: #050505;
-            height: 100vh;
-            margin: 0;
+            background-color: var(--bg);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            overflow: hidden;
+            padding: 20px;
+            margin: 0;
         }
 
+        /* --- CLOCK SECTION --- */
         .clock-container {
+            margin-top: 20px;
+            padding: 15px;
             text-align: center;
+            border: 1px solid var(--neon);
+            border-radius: 12px;
+            box-shadow: 0 0 10px var(--neon);
             cursor: pointer;
-            user-select: none;
-            padding: 40px;
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
+            width: 250px;
         }
 
         #digital-clock {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 5rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--neon-color);
-            text-shadow: 0 0 10px var(--neon-color), 0 0 25px var(--neon-color);
-            transition: color 0.4s ease, text-shadow 0.4s ease;
+            font-family: 'Courier New', monospace;
+            font-size: 2.5rem;
+            color: var(--neon);
+            text-shadow: 0 0 5px var(--neon);
         }
 
         #digital-date {
-            font-family: 'Arial', sans-serif;
-            font-size: 1.5rem;
-            margin-top: 15px;
-            letter-spacing: 5px;
+            font-size: 0.8rem;
+            opacity: 0.7;
             text-transform: uppercase;
-            color: var(--neon-color);
-            opacity: 0.8;
-            text-shadow: 0 0 5px var(--neon-color);
-            transition: color 0.4s ease, text-shadow 0.4s ease;
+            margin-top: 5px;
         }
 
-        /* Animation des points clignotants */
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.1; }
-            100% { opacity: 1; }
-        }
+        .dots { animation: pulse 1s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.1; } }
 
-        .dots {
-            display: inline-block;
-            width: 30px;
+        /* --- MAIN APP SECTION --- */
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 15px;
+            padding: 25px;
+            width: 90%;
+            max-width: 350px;
+            margin-top: 30px;
             text-align: center;
-            animation: pulse 1s infinite;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* Responsive pour mobile */
-        @media (max-width: 600px) {
-            #digital-clock { font-size: 3rem; }
-            #digital-date { font-size: 1rem; }
+        .predict-display {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 20px 0;
+            color: var(--neon);
+            text-shadow: 0 0 10px var(--neon);
         }
+
+        button {
+            background: transparent;
+            border: 2px solid var(--neon);
+            color: var(--neon);
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: var(--neon);
+            color: black;
+            box-shadow: 0 0 20px var(--neon);
+        }
+
+        /* --- HISTORY SECTION --- */
+        .history {
+            margin-top: 25px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .history-title {
+            font-size: 0.9rem;
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .win-color { color: #00ff7f; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="clock-container" title="Cliquez pour changer de couleur">
+    <div class="clock-container" onclick="changeColor()">
         <div id="digital-clock">
-            <span id="hours">00</span><span class="dots">:</span><span id="minutes">00</span><span class="dots">:</span><span id="seconds">00</span>
+            <span id="h">00</span><span class="dots">:</span><span id="m">00</span><span class="dots">:</span><span id="s">00</span>
         </div>
-        <div id="digital-date">Chargement...</div>
+        <div id="digital-date">...</div>
+    </div>
+
+    <div class="card">
+        <h2 style="margin:0">BOSS BET</h2>
+        <div class="predict-display" id="predictResult">x1.00</div>
+        <button onclick="getPrediction()">PREDICT NOW</button>
+
+        <div class="history">
+            <div class="history-title">HISTORY LOG:</div>
+            <div id="logList"></div>
+        </div>
     </div>
 
     <script>
-        /* --- LOGIQUE JAVASCRIPT --- */
-
-        // 1. Récupérer la couleur sauvegardée au démarrage
-        const savedColor = localStorage.getItem('userNeonColor');
-        if (savedColor) {
-            document.documentElement.style.setProperty('--neon-color', savedColor);
-        }
-
-        function updateInterface() {
+        // 1. Mampandeha ny ORA (24h)
+        function updateUI() {
             const now = new Date();
-
-            // Mise à jour de l'heure (Format 24h)
-            document.getElementById('hours').textContent = String(now.getHours()).padStart(2, '0');
-            document.getElementById('minutes').textContent = String(now.getMinutes()).padStart(2, '0');
-            document.getElementById('seconds').textContent = String(now.getSeconds()).padStart(2, '0');
-
-            // Mise à jour de la date
+            document.getElementById('h').textContent = String(now.getHours()).padStart(2, '0');
+            document.getElementById('m').textContent = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('s').textContent = String(now.getSeconds()).padStart(2, '0');
             const options = { day: '2-digit', month: 'long', year: 'numeric' };
             document.getElementById('digital-date').textContent = now.toLocaleDateString('fr-FR', options);
         }
+        setInterval(updateUI, 1000);
+        updateUI();
 
-        // 2. Changer la couleur aléatoirement et sauvegarder
-        function changeNeonColor() {
-            const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
-            document.documentElement.style.setProperty('--neon-color', randomColor);
-            localStorage.setItem('userNeonColor', randomColor);
+        // 2. Prediction Logic
+        function getPrediction() {
+            const result = (Math.random() * (4.00 - 1.10) + 1.10).toFixed(2);
+            document.getElementById('predictResult').innerText = "x" + result;
+
+            // Ampiana ao amin'ny History
+            const log = document.getElementById('logList');
+            const time = new Date().toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+            const entry = document.createElement('div');
+            entry.className = 'history-item';
+            entry.innerHTML = `<span>${time}</span> <span class="win-color">x${result}</span>`;
+            log.prepend(entry);
         }
 
-        // 3. Événements
-        document.querySelector('.clock-container').addEventListener('click', changeNeonColor);
-
-        // Lancement
-        setInterval(updateInterface, 1000);
-        updateInterface();
+        // 3. Ova loko kisendrasendra
+        function changeColor() {
+            const newCol = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+            document.documentElement.style.setProperty('--neon', newCol);
+        }
     </script>
 </body>
 </html>
