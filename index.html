@@ -3,88 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOSS BET - HAINGANA</title>
+    <title>BOSS BET - PREDICTOR PRO</title>
     <style>
-        body { background: #05070a; color: white; font-family: sans-serif; padding: 10px; margin: 0; }
-        .box { background: #111; border: 1px solid #333; border-radius: 10px; padding: 15px; max-width: 400px; margin: auto; }
-        h2 { color: #00d4ff; text-align: center; margin: 0 0 15px 0; font-size: 20px; }
+        body { background: #05070a; color: white; font-family: 'Segoe UI', sans-serif; padding: 15px; margin: 0; }
+        .app { max-width: 400px; margin: auto; background: #111; border: 1px solid #333; border-radius: 15px; padding: 20px; }
+        h2 { color: #00d4ff; text-align: center; margin-top: 0; text-transform: uppercase; font-size: 18px; }
         
-        label { display: block; font-size: 12px; color: #888; margin-bottom: 5px; }
-        input { width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: white; border-radius: 5px; margin-bottom: 15px; box-sizing: border-box; font-size: 16px; }
+        label { display: block; font-size: 11px; color: #888; margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; padding: 12px; background: #1a1a1a; border: 1px solid #444; color: #39ff14; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; font-size: 16px; font-weight: bold; }
         
-        .btn { width: 100%; padding: 15px; background: #00d4ff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .btn-run { width: 100%; padding: 16px; background: #00d4ff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; color: black; text-transform: uppercase; }
         
-        .results { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-        .res-item { background: #000; padding: 10px; border-radius: 5px; text-align: center; border-top: 3px solid #00d4ff; }
-        .res-item b { display: block; font-size: 18px; color: #39ff14; }
-        .res-item i { font-size: 11px; color: #888; font-style: normal; }
+        .results-area { margin-top: 25px; border-top: 1px solid #333; padding-top: 20px; }
+        .res-box { display: flex; justify-content: space-between; align-items: center; background: #000; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #00d4ff; }
+        
+        .res-info b { font-size: 12px; color: #888; display: block; }
+        .res-info span { font-size: 20px; font-weight: bold; color: #39ff14; }
+        .res-time { text-align: right; }
+        .res-time small { display: block; font-size: 10px; color: #888; }
+        .res-time b { color: #00d4ff; font-size: 14px; }
 
-        .history { margin-top: 20px; font-size: 12px; border-top: 1px solid #333; padding-top: 10px; }
-        .h-line { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #222; }
+        .history { margin-top: 20px; max-height: 150px; overflow-y: auto; font-size: 11px; color: #666; }
     </style>
 </head>
 <body>
 
-<div class="box">
-    <h2>BOSS BET PRO</h2>
+<div class="app">
+    <h2>BOSS BET AI ANALYZER</h2>
     
-    <label>LERA DEPART:</label>
+    <label>HEURE DU DÉPART :</label>
     <input type="time" id="t_dep" step="1">
 
-    <div style="display:flex; gap:10px;">
-        <div style="flex:1">
-            <label>MULT +1:</label>
-            <input type="number" id="m1" placeholder="1.00">
+    <label>MULTIPLIER FARANY NIVOAKA :</label>
+    <input type="number" id="m_last" placeholder="ex: 1.85" step="0.01">
+
+    <button class="btn-run" onclick="analyze()">HIKAJY VOKATRA (RUN)</button>
+
+    <div class="results-area">
+        <div class="res-box" style="border-color: #39ff14;">
+            <div class="res-info"><b>SÉCURITÉ</b><span id="v1">---</span></div>
+            <div class="res-time"><small>LERA:</small><b id="h1">--:--:--</b></div>
         </div>
-        <div style="flex:1">
-            <label>MULT +2:</label>
-            <input type="number" id="m2" placeholder="1.00">
+        <div class="res-box" style="border-color: orange;">
+            <div class="res-info"><b>TENTATIVE</b><span id="v2" style="color:orange">---</span></div>
+            <div class="res-time"><small>LERA:</small><b id="h2">--:--:--</b></div>
+        </div>
+        <div class="res-box" style="border-color: #ff3131;">
+            <div class="res-info"><b>RISQUE</b><span id="v3" style="color:#ff3131">---</span></div>
+            <div class="res-time"><small>LERA:</small><b id="h3">--:--:--</b></div>
         </div>
     </div>
 
-    <button class="btn" onclick="haingana()">ANALYZE NOW</button>
-
-    <div class="results">
-        <div class="res-item">
-            <i>SEC</i><b id="r1">---</b><i id="h1">--:--</i>
+    <div class="history" id="logs">
         </div>
-        <div class="res-item" style="border-color:orange">
-            <i>TENT</i><b id="r2" style="color:orange">---</b><i id="h2">--:--</i>
-        </div>
-        <div class="res-item" style="border-color:red">
-            <i>RISQ</i><b id="r3" style="color:red">---</b><i id="h3">--:--</i>
-        </div>
-    </div>
-
-    <div class="history" id="logs"></div>
 </div>
 
 <script>
-    function haingana() {
-        let t = document.getElementById('t_dep').value;
-        let v1 = parseFloat(document.getElementById('m1').value) || 1;
-        let v2 = parseFloat(document.getElementById('m2').value) || 1;
+    function analyze() {
+        const t = document.getElementById('t_dep').value;
+        const m = parseFloat(document.getElementById('m_last').value);
 
-        if(!t) return alert("Ampidiro lera!");
+        if(!t || isNaN(m)) {
+            alert("Fenoy tsara ny lera sy ny multiplier farany!");
+            return;
+        }
 
-        // Lojika tsotra nefa miovaova araka ny lera sy ny multiplier
-        let s = (v1 + v2 + new Date().getSeconds()) % 10;
-        let c1 = (1.30 + (s/20)).toFixed(2);
-        let c2 = (2.10 + (s/10)).toFixed(2);
-        let c3 = (4.50 + s).toFixed(2);
-
-        // Kajy lera (+40s, +80s, +120s)
+        // --- ALGORITMA TIME-BASED ---
+        // Alaina ny segondra avy amin'ny lera nampidirina
         let parts = t.split(':');
-        let d = new Date(); d.setHours(parts[0], parts[1], parts[2]||0);
-        const fTime = (sec) => new Date(d.getTime() + sec*1000).toTimeString().split(' ')[0];
+        let sec_base = parseInt(parts[2]) || 0;
+        let min_base = parseInt(parts[1]);
 
-        // Asehoy
-        document.getElementById('r1').innerText = c1+"x"; document.getElementById('h1').innerText = fTime(40);
-        document.getElementById('r2').innerText = c2+"x"; document.getElementById('h2').innerText = fTime(80);
-        document.getElementById('r3').innerText = c3+"x"; document.getElementById('h3').innerText = fTime(120);
+        // Formule dynamique miankina amin'ny segondra (sec_base) sy ny multiplier (m)
+        let calc1 = (1.20 + ((sec_base % 5) / 10)).toFixed(2);
+        let calc2 = (2.00 + ((min_base % 3) / 2)).toFixed(2);
+        let calc3 = (Math.max(4.50, (m * 2.5) % 20)).toFixed(2);
 
-        // Tantaran'ny valiny
-        document.getElementById('logs').innerHTML = `<div class="h-line"><span>${t}</span> <b>${c1}x</b> <span>@ ${fTime(40)}</span></div>` + document.getElementById('logs').innerHTML;
+        // Fikajiana lera vinavinaina (Add 45s, 90s, 135s)
+        const getT = (s) => {
+            let d = new Date();
+            d.setHours(parts[0], parts[1], parts[2] || 0);
+            return new Date(d.getTime() + s * 1000).toTimeString().split(' ')[0];
+        };
+
+        // Mise à jour UI
+        document.getElementById('v1').innerText = calc1 + "x";
+        document.getElementById('h1').innerText = getT(45);
+        
+        document.getElementById('v2').innerText = calc2 + "x";
+        document.getElementById('h2').innerText = getT(90);
+        
+        document.getElementById('v3').innerText = calc3 + "x";
+        document.getElementById('h3').innerText = getT(135);
+
+        // Logs
+        let logText = `<div>[${t}] Input: ${m}x -> Prediction: ${calc1}x @ ${getT(45)}</div>`;
+        document.getElementById('logs').innerHTML = logText + document.getElementById('logs').innerHTML;
     }
 </script>
 
