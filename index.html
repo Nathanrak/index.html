@@ -3,143 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOSS BET - TIME ALGO PRO</title>
+    <title>BOSS BET - HAINGANA</title>
     <style>
-        :root { --blue: #00d4ff; --green: #39ff14; --red: #ff3131; --bg: #0b0e14; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 10px; margin: 0; }
-        .container { width: 100%; max-width: 420px; background: #161b22; border-radius: 15px; padding: 15px; border: 1px solid #333; }
+        body { background: #05070a; color: white; font-family: sans-serif; padding: 10px; margin: 0; }
+        .box { background: #111; border: 1px solid #333; border-radius: 10px; padding: 15px; max-width: 400px; margin: auto; }
+        h2 { color: #00d4ff; text-align: center; margin: 0 0 15px 0; font-size: 20px; }
         
-        .header { text-align: center; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
-        .header h1 { color: var(--blue); margin: 0; font-size: 22px; text-shadow: 0 0 10px var(--blue); }
-
-        /* PREDICTION BOXES (AMBONY) */
-        .results-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
-        .res-card { background: #0d1117; padding: 10px 5px; border-radius: 10px; text-align: center; border: 1px solid #222; }
-        .res-card small { font-size: 10px; color: #888; display: block; margin-bottom: 5px; }
-        .v-main { font-size: 18px; font-weight: bold; display: block; }
-        .v-time { font-size: 11px; color: var(--blue); margin-top: 5px; display: block; background: rgba(0,212,255,0.1); border-radius: 3px; }
-
-        /* INPUT AREA (AMBANY) */
-        .input-section { background: #0d1117; padding: 15px; border-radius: 12px; border: 1px solid #333; }
-        .group { margin-bottom: 12px; }
-        label { display: block; font-size: 11px; color: var(--blue); margin-bottom: 5px; font-weight: bold; }
-        input { width: 100%; padding: 12px; background: #1a1f26; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
+        label { display: block; font-size: 12px; color: #888; margin-bottom: 5px; }
+        input { width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: white; border-radius: 5px; margin-bottom: 15px; box-sizing: border-box; font-size: 16px; }
         
-        .btn-main { width: 100%; padding: 15px; background: var(--blue); color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 5px; }
-        .btn-main:active { transform: scale(0.98); }
+        .btn { width: 100%; padding: 15px; background: #00d4ff; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 16px; }
+        
+        .results { margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .res-item { background: #000; padding: 10px; border-radius: 5px; text-align: center; border-top: 3px solid #00d4ff; }
+        .res-item b { display: block; font-size: 18px; color: #39ff14; }
+        .res-item i { font-size: 11px; color: #888; font-style: normal; }
 
-        /* HISTORY */
-        .history { margin-top: 20px; font-size: 12px; max-height: 200px; overflow-y: auto; }
-        .h-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #222; }
-        .c-green { color: var(--green); } .c-red { color: var(--red); }
+        .history { margin-top: 20px; font-size: 12px; border-top: 1px solid #333; padding-top: 10px; }
+        .h-line { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #222; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <h1>BOSS BET <span>TIME ALGO</span></h1>
-        <div id="live-clock" style="font-size: 12px; color: #888;">00:00:00</div>
-    </div>
+<div class="box">
+    <h2>BOSS BET PRO</h2>
+    
+    <label>LERA DEPART:</label>
+    <input type="time" id="t_dep" step="1">
 
-    <div class="results-grid">
-        <div class="res-card">
-            <small>SÉCURITÉ</small>
-            <span id="s-val" class="v-main c-green">---</span>
-            <span id="s-time" class="v-time">--:--:--</span>
+    <div style="display:flex; gap:10px;">
+        <div style="flex:1">
+            <label>MULT +1:</label>
+            <input type="number" id="m1" placeholder="1.00">
         </div>
-        <div class="res-card">
-            <small>TENTATIVE</small>
-            <span id="t-val" class="v-main" style="color:orange">---</span>
-            <span id="t-time" class="v-time">--:--:--</span>
-        </div>
-        <div class="res-card">
-            <small>RISQUE</small>
-            <span id="r-val" class="v-main c-red">---</span>
-            <span id="r-time" class="v-time">--:--:--</span>
+        <div style="flex:1">
+            <label>MULT +2:</label>
+            <input type="number" id="m2" placeholder="1.00">
         </div>
     </div>
 
-    <div class="input-section">
-        <div class="group">
-            <label>LERA NIAINGANY (DEPART):</label>
-            <input type="time" id="time-input" step="1">
+    <button class="btn" onclick="haingana()">ANALYZE NOW</button>
+
+    <div class="results">
+        <div class="res-item">
+            <i>SEC</i><b id="r1">---</b><i id="h1">--:--</i>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <div class="group">
-                <label>MULT. +1:</label>
-                <input type="number" id="m1" placeholder="1.20" step="0.01">
-            </div>
-            <div class="group">
-                <label>MULT. +2:</label>
-                <input type="number" id="m2" placeholder="2.50" step="0.01">
-            </div>
+        <div class="res-item" style="border-color:orange">
+            <i>TENT</i><b id="r2" style="color:orange">---</b><i id="h2">--:--</i>
         </div>
-        <button class="btn-main" onclick="runAlgo()">ANALYZE & PREDICT</button>
+        <div class="res-item" style="border-color:red">
+            <i>RISQ</i><b id="r3" style="color:red">---</b><i id="h3">--:--</i>
+        </div>
     </div>
 
-    <div class="history">
-        <h4 style="margin: 10px 0; color: var(--blue); border-bottom: 1px solid #333;">LATEST PREDICTIONS</h4>
-        <div id="h-list"></div>
-    </div>
+    <div class="history" id="logs"></div>
 </div>
 
 <script>
-    // Live Clock
-    setInterval(() => {
-        document.getElementById('live-clock').innerText = new Date().toLocaleTimeString();
-    }, 1000);
+    function haingana() {
+        let t = document.getElementById('t_dep').value;
+        let v1 = parseFloat(document.getElementById('m1').value) || 1;
+        let v2 = parseFloat(document.getElementById('m2').value) || 1;
 
-    function runAlgo() {
-        const timeVal = document.getElementById('time-input').value;
-        const m1 = parseFloat(document.getElementById('m1').value);
-        const m2 = parseFloat(document.getElementById('m2').value);
+        if(!t) return alert("Ampidiro lera!");
 
-        if(!timeVal || isNaN(m1) || isNaN(m2)) {
-            alert("Fenoy daholo ny lera sy ny multiplier 2 azafady!");
-            return;
-        }
+        // Lojika tsotra nefa miovaova araka ny lera sy ny multiplier
+        let s = (v1 + v2 + new Date().getSeconds()) % 10;
+        let c1 = (1.30 + (s/20)).toFixed(2);
+        let c2 = (2.10 + (s/10)).toFixed(2);
+        let c3 = (4.50 + s).toFixed(2);
 
-        // --- ALGORITMA MATIHANINA (TIME-BASED) ---
-        // Ny 'seed' dia miankina amin'ny segondra sy ny multiplier
-        const tParts = timeVal.split(':');
-        const seconds = parseInt(tParts[2]) || 0;
-        const minutes = parseInt(tParts[1]);
-        const seed = (seconds + minutes + m1 + m2);
+        // Kajy lera (+40s, +80s, +120s)
+        let parts = t.split(':');
+        let d = new Date(); d.setHours(parts[0], parts[1], parts[2]||0);
+        const fTime = (sec) => new Date(d.getTime() + sec*1000).toTimeString().split(' ')[0];
 
-        // Formule de calcul (Dynamique)
-        const calcSec = (1.30 + (seed % 0.5)).toFixed(2);
-        const calcTent = (2.10 + (seed % 1.2)).toFixed(2);
-        const calcRisq = (4.00 + (seed % 15)).toFixed(2);
+        // Asehoy
+        document.getElementById('r1').innerText = c1+"x"; document.getElementById('h1').innerText = fTime(40);
+        document.getElementById('r2').innerText = c2+"x"; document.getElementById('h2').innerText = fTime(80);
+        document.getElementById('r3').innerText = c3+"x"; document.getElementById('h3').innerText = fTime(120);
 
-        // Fikajiana ny Lera vinavinaina (Add 30s, 60s, 90s)
-        const getFuture = (baseTime, addSec) => {
-            let d = new Date();
-            d.setHours(tParts[0], tParts[1], tParts[2] || 0);
-            let target = new Date(d.getTime() + addSec * 1000);
-            return target.toTimeString().split(' ')[0];
-        };
-
-        const times = { s: getFuture(timeVal, 35), t: getFuture(timeVal, 70), r: getFuture(timeVal, 110) };
-
-        // Asehoy ny valiny
-        document.getElementById('s-val').innerText = calcSec + "x";
-        document.getElementById('s-time').innerText = times.s;
-        document.getElementById('t-val').innerText = calcTent + "x";
-        document.getElementById('t-time').innerText = times.t;
-        document.getElementById('r-val').innerText = (calcRisq > 50 ? "45.00" : calcRisq) + "x";
-        document.getElementById('r-time').innerText = times.r;
-
-        // Historique
-        const hList = document.getElementById('h-list');
-        const item = `
-            <div class="h-item">
-                <span>[${timeVal}] (${m1}/${m2})</span>
-                <span class="c-green"><b>${calcSec}x</b> @ ${times.s}</span>
-            </div>
-        `;
-        hList.insertAdjacentHTML('afterbegin', item);
-    </div>
+        // Tantaran'ny valiny
+        document.getElementById('logs').innerHTML = `<div class="h-line"><span>${t}</span> <b>${c1}x</b> <span>@ ${fTime(40)}</span></div>` + document.getElementById('logs').innerHTML;
+    }
 </script>
+
 </body>
 </html>
