@@ -3,108 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOSS BET - PRO ANALYZER</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <title>BOSS BET - TIME ALGO PRO</title>
     <style>
-        :root { --neon: #00d4ff; --bg: #05070a; --card: #10141b; }
-        body { background: var(--bg); color: white; font-family: sans-serif; display: flex; justify-content: center; margin: 0; }
-        .app { width: 100%; max-width: 400px; padding: 20px; }
-        .screen { display: none; background: var(--card); border: 1px solid #222; border-radius: 15px; padding: 20px; box-shadow: 0 0 20px rgba(0,212,255,0.1); }
-        .active { display: block; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; font-size: 11px; color: var(--neon); margin-bottom: 5px; }
-        input { width: 100%; padding: 12px; background: #1a1f26; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 15px; background: var(--neon); color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .result-box { background: #000; padding: 15px; border-radius: 10px; margin-top: 10px; border-left: 4px solid var(--neon); }
-        .res-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
-        .val { font-weight: bold; color: #39ff14; }
-        .tab-nav { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-nav button { flex: 1; padding: 10px; background: #1a1f26; color: white; border: 1px solid #333; border-radius: 5px; cursor: pointer; }
-        .tab-nav .active-tab { border-color: var(--neon); color: var(--neon); }
+        :root { --blue: #00d4ff; --green: #39ff14; --red: #ff3131; --bg: #0b0e14; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 10px; margin: 0; }
+        .container { width: 100%; max-width: 420px; background: #161b22; border-radius: 15px; padding: 15px; border: 1px solid #333; }
+        
+        .header { text-align: center; border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 15px; }
+        .header h1 { color: var(--blue); margin: 0; font-size: 22px; text-shadow: 0 0 10px var(--blue); }
+
+        /* PREDICTION BOXES (AMBONY) */
+        .results-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
+        .res-card { background: #0d1117; padding: 10px 5px; border-radius: 10px; text-align: center; border: 1px solid #222; }
+        .res-card small { font-size: 10px; color: #888; display: block; margin-bottom: 5px; }
+        .v-main { font-size: 18px; font-weight: bold; display: block; }
+        .v-time { font-size: 11px; color: var(--blue); margin-top: 5px; display: block; background: rgba(0,212,255,0.1); border-radius: 3px; }
+
+        /* INPUT AREA (AMBANY) */
+        .input-section { background: #0d1117; padding: 15px; border-radius: 12px; border: 1px solid #333; }
+        .group { margin-bottom: 12px; }
+        label { display: block; font-size: 11px; color: var(--blue); margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; padding: 12px; background: #1a1f26; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
+        
+        .btn-main { width: 100%; padding: 15px; background: var(--blue); color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 5px; }
+        .btn-main:active { transform: scale(0.98); }
+
+        /* HISTORY */
+        .history { margin-top: 20px; font-size: 12px; max-height: 200px; overflow-y: auto; }
+        .h-item { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #222; }
+        .c-green { color: var(--green); } .c-red { color: var(--red); }
     </style>
 </head>
 <body>
 
-<div class="app">
-    <div class="tab-nav">
-        <button id="t1" class="active-tab" onclick="show(1)">INPUT</button>
-        <button id="t2" onclick="show(2)">RESULT</button>
+<div class="container">
+    <div class="header">
+        <h1>BOSS BET <span>TIME ALGO</span></h1>
+        <div id="live-clock" style="font-size: 12px; color: #888;">00:00:00</div>
     </div>
 
-    <div id="p1" class="screen active">
-        <h3 style="color:var(--neon)">CONFIGURATION</h3>
-        <div class="input-group">
-            <label>SERVER SEED / HASH (Optional):</label>
-            <input type="text" id="hash" placeholder="Paste last hash here...">
+    <div class="results-grid">
+        <div class="res-card">
+            <small>SÉCURITÉ</small>
+            <span id="s-val" class="v-main c-green">---</span>
+            <span id="s-time" class="v-time">--:--:--</span>
         </div>
-        <div class="input-group">
-            <label>LAST MULTIPLIER (1):</label>
-            <input type="number" id="m1" step="0.01" placeholder="ex: 2.50">
+        <div class="res-card">
+            <small>TENTATIVE</small>
+            <span id="t-val" class="v-main" style="color:orange">---</span>
+            <span id="t-time" class="v-time">--:--:--</span>
         </div>
-        <div class="input-group">
-            <label>LAST MULTIPLIER (2):</label>
-            <input type="number" id="m2" step="0.01" placeholder="ex: 1.10">
+        <div class="res-card">
+            <small>RISQUE</small>
+            <span id="r-val" class="v-main c-red">---</span>
+            <span id="r-time" class="v-time">--:--:--</span>
         </div>
-        <button class="btn" onclick="runAnalysis()">RUN PRO ANALYSIS</button>
     </div>
 
-    <div id="p2" class="screen">
-        <h3 style="color:#39ff14">PREDICTIONS</h3>
-        <div id="results-container">
+    <div class="input-section">
+        <div class="group">
+            <label>LERA NIAINGANY (DEPART):</label>
+            <input type="time" id="time-input" step="1">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="group">
+                <label>MULT. +1:</label>
+                <input type="number" id="m1" placeholder="1.20" step="0.01">
             </div>
-        <button class="btn" style="background:#555; color:white;" onclick="show(1)">BACK TO EDIT</button>
+            <div class="group">
+                <label>MULT. +2:</label>
+                <input type="number" id="m2" placeholder="2.50" step="0.01">
+            </div>
+        </div>
+        <button class="btn-main" onclick="runAlgo()">ANALYZE & PREDICT</button>
+    </div>
+
+    <div class="history">
+        <h4 style="margin: 10px 0; color: var(--blue); border-bottom: 1px solid #333;">LATEST PREDICTIONS</h4>
+        <div id="h-list"></div>
     </div>
 </div>
 
 <script>
-    function show(p) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active-tab'));
-        document.getElementById('p'+p).classList.add('active');
-        document.getElementById('t'+p).classList.add('active-tab');
-    }
+    // Live Clock
+    setInterval(() => {
+        document.getElementById('live-clock').innerText = new Date().toLocaleTimeString();
+    }, 1000);
 
-    function runAnalysis() {
+    function runAlgo() {
+        const timeVal = document.getElementById('time-input').value;
         const m1 = parseFloat(document.getElementById('m1').value);
         const m2 = parseFloat(document.getElementById('m2').value);
-        const hash = document.getElementById('hash').value || "boss-bet-default-seed";
 
-        if(isNaN(m1) || isNaN(m2)) return alert("Ampidiro ny multiplier farany!");
+        if(!timeVal || isNaN(m1) || isNaN(m2)) {
+            alert("Fenoy daholo ny lera sy ny multiplier 2 azafady!");
+            return;
+        }
 
-        // --- PRO ALGORITHM (SHA-256) ---
-        // Mitambatra ny input rehetra ho "seed" iray
-        const combinedSeed = hash + m1 + m2 + new Date().getMinutes();
-        const finalHash = CryptoJS.SHA256(combinedSeed).toString();
-        
-        // Convert Hash to Multiplier (Logic Provably Fair)
-        const hex = finalHash.substring(0, 8);
-        const intVal = parseInt(hex, 16);
-        const rawMult = (4294967296 / (intVal + 1));
-        
-        // Generate 3 Tiers
-        const sec = Math.max(1.10, Math.min(1.50, rawMult * 0.4)).toFixed(2);
-        const tent = Math.max(1.50, Math.min(3.50, rawMult * 0.8)).toFixed(2);
-        const risq = Math.max(2.00, rawMult).toFixed(2);
+        // --- ALGORITMA MATIHANINA (TIME-BASED) ---
+        // Ny 'seed' dia miankina amin'ny segondra sy ny multiplier
+        const tParts = timeVal.split(':');
+        const seconds = parseInt(tParts[2]) || 0;
+        const minutes = parseInt(tParts[1]);
+        const seed = (seconds + minutes + m1 + m2);
 
-        const now = new Date();
-        const timeStr = (m) => new Date(now.getTime() + m*1000).toLocaleTimeString();
+        // Formule de calcul (Dynamique)
+        const calcSec = (1.30 + (seed % 0.5)).toFixed(2);
+        const calcTent = (2.10 + (seed % 1.2)).toFixed(2);
+        const calcRisq = (4.00 + (seed % 15)).toFixed(2);
 
-        document.getElementById('results-container').innerHTML = `
-            <div class="result-box">
-                <div class="res-row"><span>SÉCURITÉ:</span> <span class="val">${sec}x</span></div>
-                <div class="res-row"><small>Lera:</small> <small>${timeStr(45)}</small></div>
-            </div>
-            <div class="result-box" style="border-color:orange">
-                <div class="res-row"><span>TENTATIVE:</span> <span class="val" style="color:orange">${tent}x</span></div>
-                <div class="res-row"><small>Lera:</small> <small>${timeStr(90)}</small></div>
-            </div>
-            <div class="result-box" style="border-color:red">
-                <div class="res-row"><span>RISQUE:</span> <span class="val" style="color:red">${risq}x</span></div>
-                <div class="res-row"><small>Lera:</small> <small>${timeStr(150)}</small></div>
+        // Fikajiana ny Lera vinavinaina (Add 30s, 60s, 90s)
+        const getFuture = (baseTime, addSec) => {
+            let d = new Date();
+            d.setHours(tParts[0], tParts[1], tParts[2] || 0);
+            let target = new Date(d.getTime() + addSec * 1000);
+            return target.toTimeString().split(' ')[0];
+        };
+
+        const times = { s: getFuture(timeVal, 35), t: getFuture(timeVal, 70), r: getFuture(timeVal, 110) };
+
+        // Asehoy ny valiny
+        document.getElementById('s-val').innerText = calcSec + "x";
+        document.getElementById('s-time').innerText = times.s;
+        document.getElementById('t-val').innerText = calcTent + "x";
+        document.getElementById('t-time').innerText = times.t;
+        document.getElementById('r-val').innerText = (calcRisq > 50 ? "45.00" : calcRisq) + "x";
+        document.getElementById('r-time').innerText = times.r;
+
+        // Historique
+        const hList = document.getElementById('h-list');
+        const item = `
+            <div class="h-item">
+                <span>[${timeVal}] (${m1}/${m2})</span>
+                <span class="c-green"><b>${calcSec}x</b> @ ${times.s}</span>
             </div>
         `;
-        show(2);
-    }
+        hList.insertAdjacentHTML('afterbegin', item);
+    </div>
 </script>
 </body>
 </html>
