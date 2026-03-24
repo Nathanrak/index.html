@@ -3,224 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aviator Pro Predictor</title>
+    <title>AVIATOR PREDICTOR PRO</title>
     <style>
         :root {
-            --bg-color: #0f0f0f;
-            --card-bg: #1a1a1a;
-            --text-primary: #ffffff;
-            --accent: #ff004c; /* Loko Aviator */
-            --secondary: #00ff88; /* Loko ho an'ny fandresena */
-            --glass: rgba(255, 255, 255, 0.05);
+            --bg: #0b0b0b;
+            --card: #151515;
+            --accent: #ff004c;
+            --text: #ffffff;
+            --green: #00ff88;
         }
 
         [data-theme="light"] {
-            --bg-color: #f0f2f5;
-            --card-bg: #ffffff;
-            --text-primary: #1a1a1a;
-            --glass: rgba(0, 0, 0, 0.05);
+            --bg: #f5f5f5;
+            --card: #ffffff;
+            --text: #1a1a1a;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Arial', sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
             transition: 0.3s;
         }
 
-        /* Header & Theme */
-        .header {
-            width: 100%;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 500px;
-        }
-
-        .theme-btn {
-            background: var(--glass);
-            border: 1px solid var(--text-primary);
-            color: var(--text-primary);
-            padding: 5px 12px;
-            border-radius: 20px;
+        /* Mode Nuit/Jour Button */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 15px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 0.8rem;
+            border: 1px solid var(--text);
+            background: transparent;
+            color: var(--text);
         }
 
-        /* Digital Clock */
-        #clock {
-            font-family: 'Courier New', monospace;
-            font-size: 1.2rem;
-            color: var(--secondary);
+        /* Digital Clock Top */
+        #top-clock {
+            font-size: 1.5rem;
             font-weight: bold;
+            color: var(--green);
+            margin-bottom: 20px;
+            letter-spacing: 2px;
         }
 
-        /* Main Card */
-        .main-card {
-            background: var(--card-bg);
-            width: 90%;
-            max-width: 400px;
-            border-radius: 25px;
-            padding: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        .main-app {
+            background: var(--card);
+            width: 350px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(255, 0, 76, 0.2);
             text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
-            margin-top: 20px;
+            border: 1px solid #333;
         }
 
-        .prediction-display {
-            margin: 30px 0;
-            padding: 20px;
-            background: rgba(0,0,0,0.2);
+        /* RESULTS SECTION */
+        .result-box {
+            background: rgba(0,0,0,0.3);
             border-radius: 15px;
-            border-left: 5px solid var(--accent);
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px dashed var(--accent);
         }
 
-        .next-odd {
-            font-size: 3.5rem;
+        .label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            opacity: 0.7;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .value-time {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--text);
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        .value-multiplier {
+            font-size: 3rem;
             font-weight: 900;
             color: var(--accent);
             display: block;
         }
 
-        .next-time {
-            font-size: 1.1rem;
-            opacity: 0.8;
-            letter-spacing: 2px;
-        }
-
-        /* Professional Button */
-        .btn-predict {
-            background: linear-gradient(45deg, var(--accent), #ff4d00);
+        /* THE BUTTON */
+        .predict-btn {
+            background: var(--accent);
             color: white;
             border: none;
             width: 100%;
-            padding: 18px;
-            font-size: 1.1rem;
+            padding: 20px;
+            font-size: 1.2rem;
             font-weight: bold;
-            border-radius: 12px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 0, 76, 0.4);
-            transition: 0.3s;
-        }
-
-        .btn-predict:active { transform: scale(0.98); }
-
-        /* History Table */
-        .history-section {
-            width: 90%;
-            max-width: 400px;
-            margin-top: 30px;
-        }
-
-        .history-title {
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            opacity: 0.6;
-            display: block;
-        }
-
-        .history-item {
-            background: var(--glass);
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 20px;
             border-radius: 10px;
-            margin-bottom: 8px;
-            border-left: 3px solid var(--secondary);
-            animation: fadeIn 0.5s ease-in;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.2s;
         }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } }
+        .predict-btn:active { transform: scale(0.95); }
+
+        .footer-text {
+            margin-top: 15px;
+            font-size: 0.7rem;
+            opacity: 0.5;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div id="clock">00:00:00</div>
-        <button class="theme-btn" onclick="toggleTheme()">Mode Night/Day</button>
-    </div>
+    <button class="theme-toggle" onclick="toggleTheme()">Mode Nuit/Jour</button>
 
-    <div class="main-card">
-        <span style="opacity: 0.6; font-size: 0.8rem;">AVIATOR PRO ALGORITHM v2.0</span>
-        
-        <div class="prediction-display">
-            <span class="next-time" id="pred-time">--:--</span>
-            <span class="next-odd" id="pred-odd">0.00x</span>
+    <div id="top-clock">00:00:00</div>
+
+    <div class="main-app">
+        <h2 style="margin-top: 0; font-size: 1rem; opacity: 0.8;">AVIATOR PREDICTOR v3.0</h2>
+
+        <div class="result-box">
+            <span class="label">HEURE DU DÉPART</span>
+            <span class="value-time" id="departure-time">--:--:--</span>
+            
+            <hr style="border: 0.5px solid #333; margin: 20px 0;">
+
+            <span class="label">MULTIPLICATEUR (+2 minitra ho ambony)</span>
+            <span class="value-multiplier" id="multiplier-val">0.00x</span>
         </div>
 
-        <button class="btn-predict" onclick="generatePrediction()">GENERATE PREDICTION</button>
-        <p id="status" style="font-size: 0.8rem; margin-top: 10px; color: var(--secondary);">System Ready</p>
-    </div>
+        <button class="predict-btn" onclick="startPrediction()">GET PREDICTION</button>
 
-    <div class="history-section">
-        <span class="history-title">History (Last Predictions)</span>
-        <div id="history-list">
-            </div>
+        <div class="footer-text">PRO ALGORITHM BASED ON SERVER TIME</div>
     </div>
 
     <script>
-        // 1. Clock
+        // 1. Digital Clock Logic
         function updateClock() {
             const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString();
+            const timeStr = now.getHours().toString().padStart(2,'0') + ":" + 
+                            now.getMinutes().toString().padStart(2,'0') + ":" + 
+                            now.getSeconds().toString().padStart(2,'0');
+            document.getElementById('top-clock').innerText = timeStr;
         }
         setInterval(updateClock, 1000);
+        updateClock();
 
-        // 2. Theme Toggle
+        // 2. Theme Logic
         function toggleTheme() {
-            const body = document.body;
-            body.getAttribute('data-theme') === 'light' ? body.removeAttribute('data-theme') : body.setAttribute('data-theme', 'light');
+            document.body.getAttribute('data-theme') === 'light' ? 
+            document.body.removeAttribute('data-theme') : 
+            document.body.setAttribute('data-theme', 'light');
         }
 
-        // 3. Logic Prediction (+2.00x and Time)
-        function generatePrediction() {
-            const btn = document.querySelector('.btn-predict');
-            const status = document.getElementById('status');
-            
+        // 3. Prediction Logic
+        function startPrediction() {
+            const btn = document.querySelector('.predict-btn');
+            btn.innerText = "ANALYZING...";
             btn.disabled = true;
-            status.innerText = "Analyzing server data...";
-            
+
             setTimeout(() => {
-                // Heure de départ: ora izao + 1 ka hatramin'ny 2 minitra
+                // Heure du départ: + 1 hatramin'ny 3 minitra amin'ny ora izao
                 const now = new Date();
+                const randomSeconds = Math.floor(Math.random() * 60);
                 now.setMinutes(now.getMinutes() + Math.floor(Math.random() * 2) + 1);
-                const timeStr = now.getHours().toString().padStart(2,'0') + ":" + now.getMinutes().toString().padStart(2,'0');
-
-                // Multiplicateur: +2.00x no mihoatra foana
-                const odd = (Math.random() * (15.00 - 2.10) + 2.10).toFixed(2);
-
-                // Update Display
-                document.getElementById('pred-time').innerText = "START AT: " + timeStr;
-                document.getElementById('pred-odd').innerText = odd + "x";
                 
-                // Add to History
-                addToHistory(timeStr, odd);
+                const depTime = now.getHours().toString().padStart(2,'0') + ":" + 
+                                now.getMinutes().toString().padStart(2,'0') + ":" + 
+                                randomSeconds.toString().padStart(2,'0');
 
+                // Multiplicateur (+2 hatramin'ny 15)
+                const mult = (Math.random() * (15.00 - 2.10) + 2.10).toFixed(2);
+
+                document.getElementById('departure-time').innerText = depTime;
+                document.getElementById('multiplier-val').innerText = mult + "x";
+
+                btn.innerText = "GET PREDICTION";
                 btn.disabled = false;
-                status.innerText = "Prediction Success!";
-            }, 1500);
-        }
-
-        function addToHistory(time, odd) {
-            const list = document.getElementById('history-list');
-            const item = document.createElement('div');
-            item.className = 'history-item';
-            item.innerHTML = `
-                <span>${time}</span>
-                <span style="font-weight:bold; color:var(--secondary)">${odd}x</span>
-            `;
-            list.prepend(item);
-            
-            // Limit history to 5 items
-            if (list.children.length > 5) list.lastChild.remove();
+            }, 1000);
         }
     </script>
 </body>
