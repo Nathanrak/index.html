@@ -3,37 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOSS BET PRO - FINAL V5</title>
+    <title>BOSS BET AI - ADAPTIVE V6</title>
     <style>
         :root { --blue: #00d4ff; --green: #39ff14; --red: #ff3131; --bg: #0b0e14; }
         body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 10px; margin: 0; }
-        .container { width: 100%; max-width: 420px; background: #161b22; border-radius: 15px; padding: 15px; border: 1px solid #333; }
+        .container { width: 100%; max-width: 420px; background: #161b22; border-radius: 15px; padding: 15px; border: 1px solid #333; box-shadow: 0 0 20px rgba(0,212,255,0.2); }
         
-        /* 1. VALINY (PREDICTIONS) - EO AMBONY */
+        /* 1. PREDICTIONS EO AMBONY */
         .results-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 25px; }
-        .res-card { background: #0d1117; padding: 12px 5px; border-radius: 10px; text-align: center; border: 1px solid #333; position: relative; }
-        .res-card small { font-size: 9px; color: #888; display: block; margin-bottom: 5px; text-transform: uppercase; }
-        .v-main { font-size: 19px; font-weight: bold; display: block; margin-bottom: 2px; }
-        .v-time { font-size: 11px; color: var(--blue); display: block; background: rgba(0,212,255,0.1); padding: 2px; border-radius: 4px; margin-bottom: 5px; }
-        
-        /* PROBABILITY PERCENTAGE */
-        .v-prob { font-size: 10px; font-weight: bold; color: var(--green); background: rgba(57, 255, 20, 0.1); padding: 2px 4px; border-radius: 10px; }
+        .res-card { background: #0d1117; padding: 15px 5px; border-radius: 10px; text-align: center; border: 1px solid #333; position: relative; transition: 0.3s; }
+        .res-card small { font-size: 9px; color: #888; display: block; margin-bottom: 5px; font-weight: bold; }
+        .v-main { font-size: 22px; font-weight: bold; display: block; margin-bottom: 5px; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        .v-time { font-size: 11px; color: var(--blue); display: block; background: rgba(0,212,255,0.1); padding: 3px; border-radius: 4px; margin-bottom: 8px; }
+        .v-prob { font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
 
         .c-green { border-top: 4px solid var(--green); }
         .c-orange { border-top: 4px solid #ffd700; }
         .c-red { border-top: 4px solid var(--red); }
 
-        /* 2. FAMPIDIRANA (INPUTS) - EO AMBANY */
+        /* 2. INPUTS EO AMBANY */
         .input-section { background: #0d1117; padding: 15px; border-radius: 12px; border: 1px solid #333; }
         .group { margin-bottom: 12px; }
         label { display: block; font-size: 11px; color: var(--blue); margin-bottom: 5px; font-weight: bold; }
-        input { width: 100%; padding: 12px; background: #1a1f26; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; font-size: 16px; outline: none; }
-        input:focus { border-color: var(--blue); }
+        input { width: 100%; padding: 14px; background: #1a1f26; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; font-size: 18px; outline: none; font-weight: bold; }
+        input:focus { border-color: var(--blue); box-shadow: 0 0 10px rgba(0,212,255,0.3); }
         
-        .btn-main { width: 100%; padding: 16px; background: var(--blue); color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; text-transform: uppercase; margin-top: 5px; }
-        .btn-main:active { transform: scale(0.96); }
+        .btn-main { width: 100%; padding: 18px; background: var(--blue); color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; text-transform: uppercase; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,212,255,0.3); }
+        .btn-main:active { transform: scale(0.95); }
 
-        .history { margin-top: 15px; font-size: 11px; color: #555; border-top: 1px solid #222; padding-top: 10px; max-height: 100px; overflow-y: auto; }
+        .history { margin-top: 15px; font-size: 11px; color: #666; max-height: 80px; overflow-y: auto; text-align: center; }
     </style>
 </head>
 <body>
@@ -44,7 +42,7 @@
             <small>SÉCURITÉ</small>
             <span id="s-val" class="v-main" style="color:var(--green)">--.--x</span>
             <span id="s-time" class="v-time">--:--:--</span>
-            <span id="s-prob" class="v-prob">0%</span>
+            <span id="s-prob" class="v-prob" style="color:var(--green)">0%</span>
         </div>
         <div class="res-card c-orange">
             <small>TENTATIVE</small>
@@ -53,7 +51,7 @@
             <span id="t-prob" class="v-prob" style="color:#ffd700">0%</span>
         </div>
         <div class="res-card c-red">
-            <small>RISQUE</small>
+            <small>RISQUE (BIG)</small>
             <span id="r-val" class="v-main" style="color:var(--red)">--.--x</span>
             <span id="r-time" class="v-time">--:--:--</span>
             <span id="r-prob" class="v-prob" style="color:var(--red)">0%</span>
@@ -62,46 +60,54 @@
 
     <div class="input-section">
         <div class="group">
-            <label>LERA DEPART (HH:MM:SS):</label>
+            <label>LERA DEPART (TIME):</label>
             <input type="time" id="t-input" step="1">
         </div>
         <div class="group">
-            <label>MULTIPLIER FARANY NIVOAKA:</label>
-            <input type="number" id="m-input" placeholder="ex: 1.54" step="0.01">
+            <label>MULTIPLIER FARANY:</label>
+            <input type="number" id="m-input" placeholder="ex: 2.15" step="0.01">
         </div>
-        <button class="btn-main" onclick="calculate()">HIKAJY VOKATRA</button>
+        <button class="btn-main" onclick="runAdaptiveAlgo()">ANALYZE & BOOST</button>
     </div>
 
-    <div class="history" id="logs"></div>
+    <div class="history" id="logs">Ready for analysis...</div>
 </div>
 
 <script>
-    function calculate() {
-        const timeVal = document.getElementById('t-input').value;
-        const multVal = parseFloat(document.getElementById('m-input').value);
+    function runAdaptiveAlgo() {
+        const tVal = document.getElementById('t-input').value;
+        const mVal = parseFloat(document.getElementById('m-input').value);
 
-        if(!timeVal || isNaN(multVal)) {
+        if(!tVal || isNaN(mVal)) {
             alert("Fenoy tsara ny lera sy ny multiplier!");
             return;
         }
 
-        let tParts = timeVal.split(':');
-        let h = parseInt(tParts[0]);
-        let m = parseInt(tParts[1]);
-        let s = parseInt(tParts[2]) || 0;
+        let parts = tVal.split(':');
+        let h = parseInt(parts[0]);
+        let m = parseInt(parts[1]);
+        let s = parseInt(parts[2]) || 0;
 
-        // Seed miankina amin'ny segondra sy multiplier
-        let seed = (s + multVal) * 1.35;
+        // --- ALGORITMA ADAPTIVE (BOOSTED) ---
+        // Miankina amin'ny multiplier farany ny "Power" an'ny vinavina manaraka
+        let powerBase = (mVal > 2) ? 1.5 : 1.1;
+        let randomFactor = Math.random();
 
-        // Fikajiana isa dynamique
-        let res1 = (1.40 + (Math.abs(Math.sin(seed)) * 0.50)).toFixed(2);
-        let res2 = (2.30 + (Math.abs(Math.cos(seed)) * 2.50)).toFixed(2);
-        let res3 = (6.00 + (Math.abs(Math.tan(seed % 1.5)) * 10.0)).toFixed(2);
+        // 1. Sécurité: Miovaova eo anelanelan'ny 1.40x hatramin'ny 2.50x
+        let res1 = (1.40 + (randomFactor * powerBase * 0.8)).toFixed(2);
+        
+        // 2. Tentative: Afaka miakatra hatramin'ny 5.00x++
+        let res2 = (2.20 + (randomFactor * powerBase * 3.5)).toFixed(2);
+        
+        // 3. Risque: Afaka mipoaka be (Pink)
+        let res3 = (mVal * (2 + randomFactor * 5)).toFixed(2);
+        if(res3 < 5) res3 = (8.50 + randomFactor * 20).toFixed(2);
+        if(res3 > 150) res3 = (95.00 + randomFactor * 10).toFixed(2);
 
-        // Fikajiana Probability (Atao eo amin'ny 94% - 98% ho an'ny Sécurité)
-        let prob1 = Math.floor(94 + (Math.random() * 4));
-        let prob2 = Math.floor(85 + (Math.random() * 8));
-        let prob3 = Math.floor(65 + (Math.random() * 15));
+        // Fikajiana Probability (90-98% ho an'ny Sécurité, fa ampidinina raha avo ny isa)
+        let prob1 = (res1 > 2) ? Math.floor(88 + Math.random() * 5) : Math.floor(94 + Math.random() * 5);
+        let prob2 = Math.floor(75 + Math.random() * 12);
+        let prob3 = Math.floor(40 + Math.random() * 30);
 
         const getT = (sec) => {
             let d = new Date();
@@ -109,21 +115,18 @@
             return new Date(d.getTime() + sec * 1000).toTimeString().split(' ')[0];
         };
 
-        // Update UI
-        document.getElementById('s-val').innerText = res1 + "x";
-        document.getElementById('s-time').innerText = getT(45);
-        document.getElementById('s-prob').innerText = prob1 + "%";
+        // UI Update miaraka amin'ny animation kely
+        const update = (id, val, timeId, timeVal, probId, probVal) => {
+            document.getElementById(id).innerText = val + "x";
+            document.getElementById(timeId).innerText = timeVal;
+            document.getElementById(probId).innerText = probVal + "%";
+        };
 
-        document.getElementById('t-val').innerText = res2 + "x";
-        document.getElementById('t-time').innerText = getT(90);
-        document.getElementById('t-prob').innerText = prob2 + "%";
+        update('s-val', res1, 's-time', getT(42), 's-prob', prob1);
+        update('t-val', res2, 't-time', getT(88), 't-prob', prob2);
+        update('r-val', res3, 'r-time', getT(135), 'r-prob', prob3);
 
-        document.getElementById('r-val').innerText = res3 + "x";
-        document.getElementById('r-time').innerText = getT(140);
-        document.getElementById('r-prob').innerText = prob3 + "%";
-
-        // Logs
-        document.getElementById('logs').innerHTML = `<div>[${timeVal}] -> ${res1}x (${prob1}%)</div>` + document.getElementById('logs').innerHTML;
+        document.getElementById('logs').innerHTML = `Log: Input ${mVal}x detected at ${tVal}. Signal generated.`;
     }
 </script>
 
