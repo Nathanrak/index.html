@@ -1,143 +1,123 @@
 <!DOCTYPE html>
-<html lang="mg">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOSS BET AI - ULTIMATE V10</title>
+    <title>Neon Digital Clock Pro</title>
     <style>
-        :root { --blue: #00d4ff; --green: #39ff14; --red: #ff3131; --pink: #ff00ff; --bg: #0b0e14; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 10px; margin: 0; }
-        .container { width: 100%; max-width: 420px; background: #161b22; border-radius: 15px; padding: 15px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        
-        /* 1. RESULTS GRID */
-        .results-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; }
-        .res-card { background: #0d1117; padding: 12px 5px; border-radius: 10px; text-align: center; border: 2px solid #333; transition: 0.5s; position: relative; }
-        .res-card small { font-size: 9px; color: #888; display: block; margin-bottom: 5px; font-weight: bold; text-transform: uppercase; }
-        .v-main { font-size: 20px; font-weight: bold; display: block; margin-bottom: 5px; color: #fff; }
-        .v-time { font-size: 11px; color: var(--blue); display: block; background: rgba(0,212,255,0.1); padding: 3px; border-radius: 4px; }
-        .v-count { font-size: 13px; font-weight: bold; color: #fff; margin-top: 8px; display: block; border-top: 1px solid #222; padding-top: 5px; }
-
-        /* STATUS COLORS */
-        .status-safe { border-color: var(--green) !important; box-shadow: 0 0 10px rgba(57, 255, 20, 0.2); }
-        .status-safe .v-main { color: var(--green); }
-        .status-pink { animation: pulse-pink 1.5s infinite; border-color: var(--pink) !important; background: rgba(255, 0, 255, 0.05) !important; }
-        .status-pink .v-main { color: var(--pink) !important; text-shadow: 0 0 10px var(--pink); }
-
-        @keyframes pulse-pink {
-            0% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0.7); }
-            70% { box-shadow: 0 0 0 12px rgba(255, 0, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0); }
+        /* --- STYLE CSS --- */
+        :root {
+            --neon-color: #00fff2; /* Couleur initiale */
         }
 
-        /* 2. INPUT SECTION */
-        .input-section { background: #0d1117; padding: 15px; border-radius: 12px; border: 1px solid #333; margin-bottom: 20px; }
-        label { display: block; font-size: 11px; color: var(--blue); margin-bottom: 5px; font-weight: bold; }
-        input { width: 100%; padding: 12px; background: #1a1f26; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; font-size: 18px; outline: none; margin-bottom: 12px; }
-        .btn-main { width: 100%; padding: 16px; background: var(--blue); color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; text-transform: uppercase; }
+        body {
+            background-color: #050505;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
 
-        /* 3. HISTORY LOG */
-        .history-box { background: #0a0c10; border-radius: 10px; padding: 10px; border: 1px solid #222; max-height: 150px; overflow-y: auto; }
-        .history-title { font-size: 10px; color: #555; text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; border-bottom: 1px solid #222; padding-bottom: 3px; }
-        .log-item { display: flex; justify-content: space-between; font-size: 11px; padding: 5px 0; border-bottom: 1px solid #1a1a1a; color: #aaa; }
-        .log-item b { color: var(--green); }
-        .log-item i { color: var(--pink); font-style: normal; }
+        .clock-container {
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+            padding: 40px;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        #digital-clock {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 5rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-color);
+            text-shadow: 0 0 10px var(--neon-color), 0 0 25px var(--neon-color);
+            transition: color 0.4s ease, text-shadow 0.4s ease;
+        }
+
+        #digital-date {
+            font-family: 'Arial', sans-serif;
+            font-size: 1.5rem;
+            margin-top: 15px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: var(--neon-color);
+            opacity: 0.8;
+            text-shadow: 0 0 5px var(--neon-color);
+            transition: color 0.4s ease, text-shadow 0.4s ease;
+        }
+
+        /* Animation des points clignotants */
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.1; }
+            100% { opacity: 1; }
+        }
+
+        .dots {
+            display: inline-block;
+            width: 30px;
+            text-align: center;
+            animation: pulse 1s infinite;
+        }
+
+        /* Responsive pour mobile */
+        @media (max-width: 600px) {
+            #digital-clock { font-size: 3rem; }
+            #digital-date { font-size: 1rem; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="results-grid">
-        <div class="res-card" id="card-s">
-            <small>SÉCURITÉ</small>
-            <span id="s-val" class="v-main">--.--x</span>
-            <span id="s-time" class="v-time">--:--:--</span>
-            <span id="s-count" class="v-count">WAIT</span>
+    <div class="clock-container" title="Cliquez pour changer de couleur">
+        <div id="digital-clock">
+            <span id="hours">00</span><span class="dots">:</span><span id="minutes">00</span><span class="dots">:</span><span id="seconds">00</span>
         </div>
-        <div class="res-card" id="card-t">
-            <small>TENTATIVE</small>
-            <span id="t-val" class="v-main">--.--x</span>
-            <span id="t-time" class="v-time">--:--:--</span>
-            <span id="t-count" class="v-count">WAIT</span>
-        </div>
-        <div class="res-card" id="card-r">
-            <small>RISQUE (PINK)</small>
-            <span id="r-val" class="v-main">--.--x</span>
-            <span id="r-time" class="v-time">--:--:--</span>
-            <span id="r-count" class="v-count">WAIT</span>
-        </div>
+        <div id="digital-date">Chargement...</div>
     </div>
 
-    <div class="input-section">
-        <label>LERA DEPART (HH:MM:SS):</label>
-        <input type="time" id="t-input" step="1">
-        <label>MULTIPLIER FARANY:</label>
-        <input type="number" id="m-input" placeholder="ex: 1.85" step="0.01">
-        <button class="btn-main" onclick="runBoss()">ANALYZE SIGNAL</button>
-    </div>
+    <script>
+        /* --- LOGIQUE JAVASCRIPT --- */
 
-    <div class="history-box">
-        <div class="history-title">History Log (Last 5)</div>
-        <div id="history-content"></div>
-    </div>
-</div>
+        // 1. Récupérer la couleur sauvegardée au démarrage
+        const savedColor = localStorage.getItem('userNeonColor');
+        if (savedColor) {
+            document.documentElement.style.setProperty('--neon-color', savedColor);
+        }
 
-<script>
-    let activeTimers = [];
+        function updateInterface() {
+            const now = new Date();
 
-    function runBoss() {
-        const timeVal = document.getElementById('t-input').value;
-        const multVal = parseFloat(document.getElementById('m-input').value);
-        if(!timeVal || isNaN(multVal)) return alert("Fenoy tsara aloha!");
+            // Mise à jour de l'heure (Format 24h)
+            document.getElementById('hours').textContent = String(now.getHours()).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(now.getSeconds()).padStart(2, '0');
 
-        // Reset
-        activeTimers.forEach(t => clearInterval(t));
-        document.querySelectorAll('.res-card').forEach(c => c.className = 'res-card');
+            // Mise à jour de la date
+            const options = { day: '2-digit', month: 'long', year: 'numeric' };
+            document.getElementById('digital-date').textContent = now.toLocaleDateString('fr-FR', options);
+        }
 
-        const parts = timeVal.split(':');
-        const seed = Math.random();
+        // 2. Changer la couleur aléatoirement et sauvegarder
+        function changeNeonColor() {
+            const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+            document.documentElement.style.setProperty('--neon-color', randomColor);
+            localStorage.setItem('userNeonColor', randomColor);
+        }
 
-        // 1. Calculations
-        let res1 = (1.50 + (seed * 0.8)).toFixed(2);
-        let res2 = (2.50 + (seed * 3.5)).toFixed(2);
-        let res3 = (multVal * (3 + seed * 10)).toFixed(2);
-        if(res3 < 10) res3 = (12.00 + seed * 40).toFixed(2);
+        // 3. Événements
+        document.querySelector('.clock-container').addEventListener('click', changeNeonColor);
 
-        // 2. Probability & Colors
-        let probPink = Math.floor(seed * 100);
-        document.getElementById('card-s').classList.add('status-safe');
-        if (probPink > 70) document.getElementById('card-r').classList.add('status-pink');
-
-        // 3. UI & Countdown
-        const offsets = [40, 85, 130];
-        const ids = ['s', 't', 'r'];
-        const vals = [res1, res2, res3];
-
-        offsets.forEach((offset, i) => {
-            let target = new Date();
-            target.setHours(parts[0], parts[1], parts[2] || 0);
-            target = new Date(target.getTime() + offset * 1000);
-
-            document.getElementById(ids[i] + '-val').innerText = vals[i] + "x";
-            document.getElementById(ids[i] + '-time').innerText = target.toTimeString().split(' ')[0];
-
-            const timer = setInterval(() => {
-                let diff = target.getTime() - new Date().getTime();
-                let sec = Math.floor((diff % 60000) / 1000);
-                let el = document.getElementById(ids[i] + '-count');
-                if (diff <= 0) { el.innerText = "NOW!"; el.style.color = "var(--green)"; clearInterval(timer); }
-                else { el.innerText = sec + "s"; el.style.color = "white"; }
-            }, 1000);
-            activeTimers.push(timer);
-        });
-
-        // 4. Update History
-        const logContent = document.getElementById('history-content');
-        const newItem = document.createElement('div');
-        newItem.className = 'log-item';
-        newItem.innerHTML = `<span>[${timeVal}]</span> <b>${res1}x</b> <i>${probPink}% Prob</i>`;
-        logContent.prepend(newItem);
-        if (logContent.children.length > 5) logContent.removeChild(logContent.lastChild);
-    }
-</script>
+        // Lancement
+        setInterval(updateInterface, 1000);
+        updateInterface();
+    </script>
 </body>
 </html>
