@@ -3,262 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOSS BET AI - PRO INTERFACE</title>
+    <title>BOSS BET - PRO ANALYZER</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
-        :root {
-            --bg: #0b0e14;
-            --card: #1c2128;
-            --blue: #00d4ff;
-            --green: #39ff14;
-            --yellow: #ffd700;
-            --red: #ff3131;
-            --text: #ffffff;
-        }
-
-        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; justify-content: center; }
-        
-        .app-container {
-            width: 100%;
-            max-width: 450px;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background: var(--card);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* NAVIGATION TABS */
-        .nav-tabs {
-            display: flex;
-            background: #0d1117;
-            border-bottom: 1px solid #30363d;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            background: none;
-            color: #8b949e;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
-            font-size: 13px;
-        }
-
-        .tab-btn.active {
-            color: var(--blue);
-            border-bottom: 2px solid var(--blue);
-            background: rgba(0, 212, 255, 0.05);
-        }
-
-        /* PAGES */
-        .page {
-            display: none;
-            padding: 20px;
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .page.active { display: block; }
-
-        /* INPUT STYLE (PAGE 1) */
-        .input-card {
-            background: #0d1117;
-            padding: 25px;
-            border-radius: 15px;
-            border: 1px solid #30363d;
-            margin-top: 20px;
-        }
-
-        .field { margin-bottom: 20px; }
-        label { display: block; font-size: 12px; color: var(--blue); margin-bottom: 8px; font-weight: bold; }
-        input {
-            width: 100%;
-            box-sizing: border-box;
-            background: #161b22;
-            border: 1px solid #444;
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 16px;
-            outline: none;
-        }
-
-        input:focus { border-color: var(--blue); box-shadow: 0 0 10px rgba(0, 212, 255, 0.2); }
-
-        .run-btn {
-            width: 100%;
-            padding: 15px;
-            background: var(--blue);
-            color: #000;
-            border: none;
-            border-radius: 10px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        /* PREDICTION STYLE (PAGE 2) */
-        .p-grid { display: grid; gap: 15px; margin-bottom: 20px; }
-        .p-item {
-            background: #0d1117;
-            padding: 15px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-left: 4px solid var(--blue);
-        }
-
-        .p-info h4 { margin: 0; font-size: 12px; color: #8b949e; }
-        .p-info div { font-size: 20px; font-weight: bold; }
-        .p-time-badge { background: #161b22; padding: 5px 10px; border-radius: 5px; font-size: 12px; color: var(--blue); }
-
-        .history-table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 12px; }
-        .history-table th { text-align: left; padding: 10px; color: #8b949e; border-bottom: 1px solid #30363d; }
-        .history-table td { padding: 10px; border-bottom: 1px solid #21262d; }
-
-        .sec { color: var(--green); }
-        .tent { color: var(--yellow); }
-        .risq { color: var(--red); }
+        :root { --neon: #00d4ff; --bg: #05070a; --card: #10141b; }
+        body { background: var(--bg); color: white; font-family: sans-serif; display: flex; justify-content: center; margin: 0; }
+        .app { width: 100%; max-width: 400px; padding: 20px; }
+        .screen { display: none; background: var(--card); border: 1px solid #222; border-radius: 15px; padding: 20px; box-shadow: 0 0 20px rgba(0,212,255,0.1); }
+        .active { display: block; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 11px; color: var(--neon); margin-bottom: 5px; }
+        input { width: 100%; padding: 12px; background: #1a1f26; border: 1px solid #333; color: white; border-radius: 8px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; background: var(--neon); color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .result-box { background: #000; padding: 15px; border-radius: 10px; margin-top: 10px; border-left: 4px solid var(--neon); }
+        .res-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
+        .val { font-weight: bold; color: #39ff14; }
+        .tab-nav { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-nav button { flex: 1; padding: 10px; background: #1a1f26; color: white; border: 1px solid #333; border-radius: 5px; cursor: pointer; }
+        .tab-nav .active-tab { border-color: var(--neon); color: var(--neon); }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="openPage('input-page', this)">Settings</button>
-            <button class="tab-btn" onclick="openPage('predict-page', this)">Predictions</button>
-        </div>
-
-        <div id="input-page" class="page active">
-            <h2 style="text-align: center; color: var(--blue);">AI CONFIG</h2>
-            <div class="input-card">
-                <div class="field">
-                    <label>LERA DEPART (TIME):</label>
-                    <input type="time" id="start-time" step="1">
-                </div>
-                <div class="field">
-                    <label>MULTIPLIER +1 (RESULT 1):</label>
-                    <input type="number" id="val1" placeholder="ex: 1.50" step="0.01">
-                </div>
-                <div class="field">
-                    <label>MULTIPLIER +2 (RESULT 2):</label>
-                    <input type="number" id="val2" placeholder="ex: 2.10" step="0.01">
-                </div>
-                <button class="run-btn" onclick="processPredictions()">GENERATE SIGNALS</button>
-            </div>
-            <button style="background:none; border:none; color:var(--red); width:100%; margin-top:20px; cursor:pointer;" onclick="location.reload()">🗑️ RESET DATA</button>
-        </div>
-
-        <div id="predict-page" class="page">
-            <h2 style="text-align: center; color: var(--green);">LIVE SIGNALS</h2>
-            
-            <div class="p-grid">
-                <div class="p-item" style="border-color: var(--green);">
-                    <div class="p-info">
-                        <h4>SÉCURITÉ</h4>
-                        <div id="res-sec" class="sec">---</div>
-                    </div>
-                    <div id="time-sec" class="p-time-badge">--:--:--</div>
-                </div>
-                <div class="p-item" style="border-color: var(--yellow);">
-                    <div class="p-info">
-                        <h4>TENTATIVE</h4>
-                        <div id="res-tent" class="tent">---</div>
-                    </div>
-                    <div id="time-tent" class="p-time-badge">--:--:--</div>
-                </div>
-                <div class="p-item" style="border-color: var(--red);">
-                    <div class="p-info">
-                        <h4>RISQUE</h4>
-                        <div id="res-risq" class="risq">---</div>
-                    </div>
-                    <div id="time-risq" class="p-time-badge">--:--:--</div>
-                </div>
-            </div>
-
-            <h4>HISTORY LOGS</h4>
-            <table class="history-table">
-                <thead>
-                    <tr>
-                        <th>DEPART</th>
-                        <th>INPUTS</th>
-                        <th>SIGNAL</th>
-                        <th>TIME</th>
-                    </tr>
-                </thead>
-                <tbody id="h-list"></tbody>
-            </table>
-        </div>
+<div class="app">
+    <div class="tab-nav">
+        <button id="t1" class="active-tab" onclick="show(1)">INPUT</button>
+        <button id="t2" onclick="show(2)">RESULT</button>
     </div>
 
-    <script>
-        // Tab System
-        function openPage(pageId, btn) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            btn.classList.add('active');
-        }
+    <div id="p1" class="screen active">
+        <h3 style="color:var(--neon)">CONFIGURATION</h3>
+        <div class="input-group">
+            <label>SERVER SEED / HASH (Optional):</label>
+            <input type="text" id="hash" placeholder="Paste last hash here...">
+        </div>
+        <div class="input-group">
+            <label>LAST MULTIPLIER (1):</label>
+            <input type="number" id="m1" step="0.01" placeholder="ex: 2.50">
+        </div>
+        <div class="input-group">
+            <label>LAST MULTIPLIER (2):</label>
+            <input type="number" id="m2" step="0.01" placeholder="ex: 1.10">
+        </div>
+        <button class="btn" onclick="runAnalysis()">RUN PRO ANALYSIS</button>
+    </div>
 
-        // Logic
-        function processPredictions() {
-            const time = document.getElementById('start-time').value;
-            const v1 = parseFloat(document.getElementById('val1').value);
-            const v2 = parseFloat(document.getElementById('val2').value);
+    <div id="p2" class="screen">
+        <h3 style="color:#39ff14">PREDICTIONS</h3>
+        <div id="results-container">
+            </div>
+        <button class="btn" style="background:#555; color:white;" onclick="show(1)">BACK TO EDIT</button>
+    </div>
+</div>
 
-            if(!time || isNaN(v1) || isNaN(v2)) {
-                alert("Fenoy daholo ny fampidirana azafady!");
-                return;
-            }
+<script>
+    function show(p) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.tab-nav button').forEach(b => b.classList.remove('active-tab'));
+        document.getElementById('p'+p).classList.add('active');
+        document.getElementById('t'+p).classList.add('active-tab');
+    }
 
-            // Algorithm Dynamique (miankina amin'ny v1 sy v2)
-            const seed = (v1 + v2) / 2;
-            const resSec = (1.25 + (seed * 0.05)).toFixed(2);
-            const resTent = (2.10 + (seed * 0.15)).toFixed(2);
-            const resRisq = (5.00 + (seed * 0.5)).toFixed(2);
+    function runAnalysis() {
+        const m1 = parseFloat(document.getElementById('m1').value);
+        const m2 = parseFloat(document.getElementById('m2').value);
+        const hash = document.getElementById('hash').value || "boss-bet-default-seed";
 
-            // Time calculation
-            const tParts = time.split(':');
-            let d = new Date();
-            d.setHours(tParts[0], tParts[1], tParts[2] || 0);
+        if(isNaN(m1) || isNaN(m2)) return alert("Ampidiro ny multiplier farany!");
 
-            const formatTime = (base, sec) => new Date(base.getTime() + sec * 1000).toTimeString().split(' ')[0];
+        // --- PRO ALGORITHM (SHA-256) ---
+        // Mitambatra ny input rehetra ho "seed" iray
+        const combinedSeed = hash + m1 + m2 + new Date().getMinutes();
+        const finalHash = CryptoJS.SHA256(combinedSeed).toString();
+        
+        // Convert Hash to Multiplier (Logic Provably Fair)
+        const hex = finalHash.substring(0, 8);
+        const intVal = parseInt(hex, 16);
+        const rawMult = (4294967296 / (intVal + 1));
+        
+        // Generate 3 Tiers
+        const sec = Math.max(1.10, Math.min(1.50, rawMult * 0.4)).toFixed(2);
+        const tent = Math.max(1.50, Math.min(3.50, rawMult * 0.8)).toFixed(2);
+        const risq = Math.max(2.00, rawMult).toFixed(2);
 
-            const times = {
-                sec: formatTime(d, 45),
-                tent: formatTime(d, 90),
-                risq: formatTime(d, 150)
-            };
+        const now = new Date();
+        const timeStr = (m) => new Date(now.getTime() + m*1000).toLocaleTimeString();
 
-            // Update UI
-            document.getElementById('res-sec').innerText = resSec + "x";
-            document.getElementById('time-sec').innerText = times.sec;
-            document.getElementById('res-tent').innerText = resTent + "x";
-            document.getElementById('time-tent').innerText = times.tent;
-            document.getElementById('res-risq').innerText = (resRisq > 50 ? "48.50" : resRisq) + "x";
-            document.getElementById('time-risq').innerText = times.risq;
-
-            // Add to history
-            const hList = document.getElementById('h-list');
-            const row = `<tr>
-                <td>${time}</td>
-                <td>${v1}/${v2}</td>
-                <td class="sec">${resSec}x</td>
-                <td>${times.sec}</td>
-            </tr>`;
-            hList.insertAdjacentHTML('afterbegin', row);
-
-            // Tong d'mifindra any amin'ny page prediction
-            setTimeout(() => {
-                openPage('predict-page', document.querySelectorAll('.tab-btn')[1]);
-            }, 500);
-        }
-    </script>
+        document.getElementById('results-container').innerHTML = `
+            <div class="result-box">
+                <div class="res-row"><span>SÉCURITÉ:</span> <span class="val">${sec}x</span></div>
+                <div class="res-row"><small>Lera:</small> <small>${timeStr(45)}</small></div>
+            </div>
+            <div class="result-box" style="border-color:orange">
+                <div class="res-row"><span>TENTATIVE:</span> <span class="val" style="color:orange">${tent}x</span></div>
+                <div class="res-row"><small>Lera:</small> <small>${timeStr(90)}</small></div>
+            </div>
+            <div class="result-box" style="border-color:red">
+                <div class="res-row"><span>RISQUE:</span> <span class="val" style="color:red">${risq}x</span></div>
+                <div class="res-row"><small>Lera:</small> <small>${timeStr(150)}</small></div>
+            </div>
+        `;
+        show(2);
+    }
+</script>
 </body>
 </html>
