@@ -3,63 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BOSS BET AI - COUNTDOWN V8</title>
+    <title>BOSS BET AI - SMART ALERT V9</title>
     <style>
         :root { --blue: #00d4ff; --green: #39ff14; --red: #ff3131; --pink: #ff00ff; --bg: #0b0e14; }
         body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; padding: 10px; margin: 0; }
         .container { width: 100%; max-width: 420px; background: #161b22; border-radius: 15px; padding: 15px; border: 1px solid #333; }
         
-        /* 1. PREDICTIONS */
+        /* PREDICTIONS */
         .results-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 25px; }
-        .res-card { background: #0d1117; padding: 12px 5px; border-radius: 10px; text-align: center; border: 2px solid #333; transition: 0.4s; position: relative; }
+        .res-card { background: #0d1117; padding: 12px 5px; border-radius: 10px; text-align: center; border: 2px solid #333; transition: 0.5s ease; position: relative; }
         .res-card small { font-size: 9px; color: #888; display: block; margin-bottom: 5px; font-weight: bold; }
-        .v-main { font-size: 20px; font-weight: bold; display: block; margin-bottom: 5px; }
+        .v-main { font-size: 20px; font-weight: bold; display: block; margin-bottom: 5px; color: #fff; }
         .v-time { font-size: 11px; color: var(--blue); display: block; background: rgba(0,212,255,0.1); padding: 3px; border-radius: 4px; }
         
-        /* COUNTDOWN STYLE */
+        /* COUNTDOWN & PROB */
         .v-count { font-size: 13px; font-weight: bold; color: #fff; margin-top: 8px; display: block; border-top: 1px solid #222; padding-top: 5px; }
-        .timer-ready { color: var(--green); animation: blink 0.8s infinite; font-size: 14px; }
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .v-prob { font-size: 10px; color: #555; display: block; margin-top: 3px; }
 
-        /* ALERT PINK */
+        /* DYNAMIC COLORS - MIREHITRA REHEFA HITAN'NY IA */
+        .status-safe { border-color: var(--green) !important; box-shadow: 0 0 10px rgba(57, 255, 20, 0.2); }
+        .status-safe .v-main { color: var(--green); }
+        
+        .status-pink { animation: pulse-pink 1.5s infinite; border-color: var(--pink) !important; background: rgba(255, 0, 255, 0.05) !important; }
+        .status-pink .v-main { color: var(--pink) !important; text-shadow: 0 0 10px var(--pink); }
+
         @keyframes pulse-pink {
-            0% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0.7); border-color: var(--pink); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 0, 255, 0); border-color: var(--pink); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0); border-color: var(--pink); }
+            0% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0.7); }
+            70% { box-shadow: 0 0 0 12px rgba(255, 0, 255, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 0, 255, 0); }
         }
-        .alert-pink { animation: pulse-pink 1.5s infinite; border-color: var(--pink) !important; background: rgba(255, 0, 255, 0.05) !important; }
 
-        /* 2. INPUTS */
+        /* INPUTS */
         .input-section { background: #0d1117; padding: 15px; border-radius: 12px; border: 1px solid #333; }
         .group { margin-bottom: 12px; }
         label { display: block; font-size: 11px; color: var(--blue); margin-bottom: 5px; font-weight: bold; }
-        input { width: 100%; padding: 14px; background: #1a1f26; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; font-size: 18px; outline: none; font-weight: bold; }
-        
+        input { width: 100%; padding: 14px; background: #1a1f26; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; font-size: 18px; outline: none; }
         .btn-main { width: 100%; padding: 18px; background: var(--blue); color: black; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; text-transform: uppercase; }
-        .btn-main:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="results-grid">
-        <div class="res-card" id="card-s" style="border-top-color: var(--green)">
+        <div class="res-card" id="card-s">
             <small>SÉCURITÉ</small>
-            <span id="s-val" class="v-main" style="color:var(--green)">--.--x</span>
+            <span id="s-val" class="v-main">--.--x</span>
             <span id="s-time" class="v-time">--:--:--</span>
             <span id="s-count" class="v-count">WAIT</span>
         </div>
-        <div class="res-card" id="card-t" style="border-top-color: orange">
+        <div class="res-card" id="card-t">
             <small>TENTATIVE</small>
-            <span id="t-val" class="v-main" style="color:orange">--.--x</span>
+            <span id="t-val" class="v-main">--.--x</span>
             <span id="t-time" class="v-time">--:--:--</span>
             <span id="t-count" class="v-count">WAIT</span>
         </div>
-        <div class="res-card" id="card-r" style="border-top-color: var(--red)">
+        <div class="res-card" id="card-r">
             <small>RISQUE (PINK)</small>
-            <span id="r-val" class="v-main" style="color:var(--red)">--.--x</span>
+            <span id="r-val" class="v-main">--.--x</span>
             <span id="r-time" class="v-time">--:--:--</span>
             <span id="r-count" class="v-count">WAIT</span>
+            <span id="r-prob" class="v-prob">Prob: 0%</span>
         </div>
     </div>
 
@@ -72,67 +75,65 @@
             <label>MULTIPLIER FARANY:</label>
             <input type="number" id="m-input" placeholder="ex: 1.85" step="0.01">
         </div>
-        <button class="btn-main" onclick="startAnalysis()">ANALYZE & START TIMER</button>
+        <button class="btn-main" onclick="analyzeSmart()">START AI ANALYSIS</button>
     </div>
 </div>
 
 <script>
     let timers = [];
 
-    function startAnalysis() {
+    function analyzeSmart() {
         const tVal = document.getElementById('t-input').value;
         const mVal = parseFloat(document.getElementById('m-input').value);
         if(!tVal || isNaN(mVal)) return alert("Fenoy tsara ny lera sy ny multiplier!");
 
-        // Clear existing timers
+        // Reset
         timers.forEach(t => clearInterval(t));
-        timers = [];
+        document.querySelectorAll('.res-card').forEach(c => c.className = 'res-card');
 
-        let parts = tVal.split(':');
-        let random = Math.random();
+        const parts = tVal.split(':');
+        const randomSeed = Math.random();
 
         // 1. Calculations
-        let res1 = (1.55 + (random * 0.8)).toFixed(2);
-        let res2 = (2.60 + (random * 3.5)).toFixed(2);
-        let res3 = (mVal * (4 + random * 12)).toFixed(2);
-        if(res3 < 15) res3 = (12.50 + random * 45).toFixed(2);
+        let res1 = (1.45 + (randomSeed * 0.9)).toFixed(2);
+        let res2 = (2.40 + (randomSeed * 4.0)).toFixed(2);
+        let res3 = (mVal * (2 + randomSeed * 10)).toFixed(2);
+        if(res3 < 8) res3 = (10.00 + randomSeed * 30).toFixed(2);
 
-        // 2. Target Times (seconds from now)
-        const offsets = [42, 88, 135]; 
+        // 2. Probability Analysis
+        let p3 = Math.floor(20 + (randomSeed * 75)); // Probability dynamique
+
+        // 3. UI Updates
+        const offsets = [40, 85, 130];
         const ids = ['s', 't', 'r'];
         const vals = [res1, res2, res3];
 
-        offsets.forEach((offset, index) => {
-            let targetDate = new Date();
-            targetDate.setHours(parts[0], parts[1], parts[2] || 0);
-            targetDate = new Date(targetDate.getTime() + offset * 1000);
+        offsets.forEach((offset, i) => {
+            let target = new Date();
+            target.setHours(parts[0], parts[1], parts[2] || 0);
+            target = new Date(target.getTime() + offset * 1000);
 
-            // Update UI Initial
-            document.getElementById(ids[index] + '-val').innerText = vals[index] + "x";
-            document.getElementById(ids[index] + '-time').innerText = targetDate.toTimeString().split(' ')[0];
+            document.getElementById(ids[i] + '-val').innerText = vals[i] + "x";
+            document.getElementById(ids[i] + '-time').innerText = target.toTimeString().split(' ')[0];
 
-            // Pink Alert Logic
-            if(index === 2 && (mVal > 3 || random > 0.6)) {
-                document.getElementById('card-r').classList.add('alert-pink');
-            } else {
-                document.getElementById('card-r').classList.remove('alert-pink');
+            // AI Logic for Colors
+            if (i === 0) document.getElementById('card-s').classList.add('status-safe');
+            
+            if (i === 2) {
+                document.getElementById('r-prob').innerText = "Prob: " + p3 + "%";
+                // LOKO ROSE: Raha vao mihoatra ny 70% ihany vao mirehitra
+                if (p3 >= 70) {
+                    document.getElementById('card-r').classList.add('status-pink');
+                }
             }
 
-            // Start Countdown
+            // Countdown
             const timer = setInterval(() => {
-                let now = new Date().getTime();
-                let distance = targetDate.getTime() - now;
-                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                let element = document.getElementById(ids[index] + '-count');
-
-                if (distance < 0) {
-                    element.innerText = "NOW!";
-                    element.classList.add('timer-ready');
-                    clearInterval(timer);
-                } else {
-                    element.innerText = seconds + "s";
-                    element.classList.remove('timer-ready');
-                }
+                let diff = target.getTime() - new Date().getTime();
+                let sec = Math.floor((diff % 60000) / 1000);
+                let el = document.getElementById(ids[i] + '-count');
+                if (diff <= 0) { el.innerText = "NOW!"; el.style.color = "var(--green)"; clearInterval(timer); }
+                else { el.innerText = sec + "s"; el.style.color = "white"; }
             }, 1000);
             timers.push(timer);
         });
